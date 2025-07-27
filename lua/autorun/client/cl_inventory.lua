@@ -28,6 +28,7 @@ local function OpenInventory()
     InventoryUI:SetVisible(true)
     InventoryUI:SetMouseInputEnabled(true)
     InventoryUI:SetKeyboardInputEnabled(true)
+    gui.EnableScreenClicker(true)
     InventoryOpen = true
 end
 
@@ -38,6 +39,7 @@ local function CloseInventory()
         InventoryUI:SetMouseInputEnabled(false)
         InventoryUI:SetKeyboardInputEnabled(false)
     end
+    gui.EnableScreenClicker(false)
     InventoryOpen = false
 end
 
@@ -49,5 +51,12 @@ hook.Add("PlayerBindPress", "InventoryTabToggle", function(ply, bind, pressed)
             OpenInventory()
         end
         return true
+    end
+end)
+
+hook.Add("CreateMove", "InventoryBlockMovement", function(cmd)
+    if InventoryOpen then
+        cmd:ClearMovement()
+        cmd:ClearButtons()
     end
 end)
