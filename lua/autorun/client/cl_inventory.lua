@@ -40,8 +40,8 @@ local function CloseInventory()
     InventoryOpen = false
 end
 
-hook.Add("PlayerBindPress", "InventoryShiftOpen", function(ply, bind, pressed)
-    if bind == "+speed" and pressed then
+hook.Add("PlayerBindPress", "InventoryTabToggle", function(ply, bind, pressed)
+    if bind == "+showscores" and pressed then
         if InventoryOpen then
             CloseInventory()
         else
