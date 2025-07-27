@@ -16,7 +16,8 @@ local function CreateInventory()
     InventoryUI.Paint = function(self, w, h)
         if not self.StartTime then self.StartTime = SysTime() end
         Derma_DrawBackgroundBlur(self, self.StartTime)
-        surface.SetDrawColor(0, 0, 0, 150)
+        -- Use a lower alpha so the blur appears lighter
+        surface.SetDrawColor(0, 0, 0, 80)
         surface.DrawRect(0, 0, w, h)
     end
 end
