@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoPixel Inventory UI - Fyntric Framework</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="nui-wrapper">
+        <div class="inventory-container">
+            <!-- Left Panel - Character Equipment -->
+            <div class="left-panel">
+                <!-- Equipment Slots -->
+                <div class="equipment-section">
+                    <div class="equipment-row">
+                        <div class="equipment-slot" data-slot="headphones">
+                            <div class="icon-bg">
+                                <i class="fas fa-headphones icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="mask">
+                            <div class="icon-bg">
+                                <i class="fas fa-mask icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="glasses">
+                            <div class="icon-bg">
+                                <i class="fas fa-glasses icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="equipment-row">
+                        <div class="equipment-slot" data-slot="vest">
+                            <div class="icon-bg">
+                                <i class="fas fa-vest icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="shoes">
+                            <div class="icon-bg">
+                                <i class="fas fa-shoe-prints icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="equipment-row">
+                        <div class="equipment-slot" data-slot="wallet">
+                            <div class="icon-bg">
+                                <i class="fas fa-wallet icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="phone">
+                            <div class="icon-bg">
+                                <i class="fas fa-mobile-alt icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="keys">
+                            <div class="icon-bg">
+                                <i class="fas fa-key icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="equipment-row">
+                        <div class="equipment-slot" data-slot="credit-card">
+                            <div class="icon-bg">
+                                <i class="fas fa-credit-card icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                        <div class="equipment-slot" data-slot="backpack">
+                            <div class="icon-bg">
+                                <i class="fas fa-backpack icon placeholder-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Character Image -->
+                <div class="character-section">
+                    <div class="character-image">
+                        <i class="fas fa-user placeholder-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Personal Info -->
+                <div class="personal-info">
+                    <div class="info-row">
+                        <span class="text-np">Name:</span>
+                        <span>John Doe</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="text-np">Job:</span>
+                        <span>Civilian</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="text-np">Cash:</span>
+                        <span class="text-np">$1,250</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="text-np">Bank:</span>
+                        <span class="text-np">$15,000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Panel - Player Inventory -->
+            <div class="middle-panel">
+                <div class="panel-header">
+                    <h3 class="text-np">Player Inventory</h3>
+                    <div class="weight-info">
+                        <span class="text-np">Weight: 45/100 kg</span>
+                    </div>
+                </div>
+                <div class="inv-panel player-inventory">
+                    <div class="inventory-grid" id="player-inventory">
+                        <!-- Player inventory slots will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Ground/Trunk -->
+            <div class="right-panel">
+                <!-- Ground Inventory -->
+                <div class="ground-section">
+                    <div class="panel-header">
+                        <h3 class="text-np">Ground</h3>
+                    </div>
+                    <div class="inv-panel ground-inventory">
+                        <div class="inventory-grid" id="ground-inventory">
+                            <!-- Ground inventory slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trunk Inventory -->
+                <div class="trunk-section">
+                    <div class="panel-header">
+                        <h3 class="text-np">Trunk</h3>
+                    </div>
+                    <div class="inv-panel trunk-inventory">
+                        <div class="inventory-grid" id="trunk-inventory">
+                            <!-- Trunk inventory slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
