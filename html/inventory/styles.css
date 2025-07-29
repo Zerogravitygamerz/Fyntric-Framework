@@ -16,26 +16,34 @@
 }
 
 body {
+    margin: 0;
+    padding: 0;
     font-family: 'Oswald', sans-serif;
-    background: #0c0e12;
+    background: transparent;
     color: #ecf0f1;
     overflow: hidden;
+    width: 100vw;
+    height: 100vh;
 }
 
 #qbcore-inventory {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     display: block;
     user-select: none;
     background: var(--color-primary-inventory-bg);
+    z-index: 1000;
 }
 
 .inv-container {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
 }
 
 /* Left Sidebar */
@@ -46,555 +54,444 @@ body {
     width: 60px;
     height: 100vh;
     background-color: rgba(20, 20, 20, 0.9);
-    border-right: 1px solid #333;
+    border-right: 2px solid var(--color-accent);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
-    z-index: 5;
+    gap: 15px;
 }
 
 .sidebar-icon {
     width: 40px;
     height: 40px;
-    background-color: rgba(55, 55, 55, 0.8);
-    border: 1px solid #444;
-    border-radius: 6px;
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 1px solid var(--color-accent);
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    color: var(--color-accent);
+    font-size: 18px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .sidebar-icon:hover {
-    background-color: rgba(49, 212, 169, 0.2);
-    border-color: #31d4a9;
+    background-color: var(--color-accent);
+    color: #000;
+    transform: scale(1.1);
 }
 
-.sidebar-icon i {
-    font-size: 18px;
-    color: #888;
-}
-
-/* Character Body Positioning */
+/* Character Body Container */
 .player-body-container {
     position: absolute;
-    top: 12%;
-    left: 12%;
-    width: 20%;
-    height: 65%;
+    left: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 250px;
+    height: 500px;
+}
+
+.player-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.player-body {
-    position: relative;
-    width: 180px;
-    height: 390px;
+.player-body img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 /* Equipment Slots */
 .equipment-slot {
-    width: 50px;
-    height: 50px;
-    background: radial-gradient(#32343961, #32343907);
-    border: 1px solid #2c3e50;
-    border-radius: 6px;
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid var(--color-accent);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: absolute;
-    z-index: 60;
 }
 
 .equipment-slot:hover {
-    border-color: #2ec3a1;
-    box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.25);
+    background: rgba(50, 50, 50, 0.9);
+    border-color: #fff;
+    transform: scale(1.05);
 }
 
-.equipment-slot.has-item {
-    border-color: #2ec3a1;
-}
-
-/* Inventory Sections */
-.player-inventory-first {
-    position: absolute;
-    top: 8%;
-    left: 5%;
-    width: 180px;
-    height: 280px;
-    padding: 8px;
-    z-index: 10;
-}
-
-.player-inventory {
-    position: absolute;
-    top: 8%;
-    left: 38%;
-    width: 480px;
-    height: 300px;
-    padding: 8px;
-    z-index: 100;
-}
-
-.player-inventory-backpack {
-    position: absolute;
-    top: 48%;
-    left: 38%;
-    width: 480px;
-    height: 580px;
-    padding: 8px;
-    z-index: 100;
-}
-
-.other-inventory {
-    position: absolute;
-    top: 8%;
-    right: 1%;
-    width: 480px;
-    height: 300px;
-    padding: 8px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    z-index: 100;
-}
-
-/* Inventory Icons */
-.pocket-inventory-icon {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    left: 5%;
-    top: 4%;
-    text-align: center;
-    font-size: 18px;
-    color: #31d4a9;
-    background-color: rgba(49, 212, 169, 0.3);
-    box-shadow: 0 0 1vh #31d4a9;
-    border: 1px solid #31d4a9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.player-inventory-icon {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    left: 38%;
-    top: 4%;
-    text-align: center;
-    font-size: 18px;
-    color: #31d4a9;
-    background-color: rgba(49, 212, 169, 0.3);
-    box-shadow: 0 0 1vh #31d4a9;
-    border: 1px solid #31d4a9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.backpack-inventory-icon {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    left: 38%;
-    top: 44%;
-    text-align: center;
-    font-size: 18px;
-    color: #31d4a9;
-    background-color: rgba(49, 212, 169, 0.3);
-    box-shadow: 0 0 1vh #31d4a9;
-    border: 1px solid #31d4a9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.other-inventory-icon {
-    position: absolute;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    right: 1%;
-    top: 4%;
-    text-align: center;
-    font-size: 18px;
-    color: #31d4a9;
-    background-color: rgba(49, 212, 169, 0.3);
-    box-shadow: 0 0 1vh #31d4a9;
-    border: 1px solid #31d4a9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Inventory Labels */
-#pocket-inv-label {
-    position: absolute;
-    color: white;
-    font-size: 15px;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 300;
-    left: 9%;
-    top: 4.5%;
-    text-transform: normal;
-}
-
-#player-inv-label {
-    position: absolute;
-    color: white;
-    font-size: 15px;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 300;
-    left: 42%;
-    top: 4.5%;
-    text-transform: normal;
-}
-
-#player-inv-weight {
-    position: absolute;
-    color: rgb(175, 175, 175);
-    font-size: 11px;
-    font-weight: 200;
-    font-family: 'Oswald', sans-serif;
-    left: 51%;
-    top: 4.8%;
-}
-
-#backpack-inv-label {
-    position: absolute;
-    color: white;
-    font-size: 15px;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 300;
-    left: 42%;
-    top: 44.5%;
-    text-transform: normal;
-}
-
-#other-inv-label {
-    position: absolute;
-    color: white;
-    font-size: 15px;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 300;
-    right: 5%;
-    top: 4.5%;
-    text-transform: normal;
-}
-
-#other-inv-weight {
-    position: absolute;
-    color: rgb(175, 175, 175);
-    font-size: 11px;
-    font-weight: 200;
-    font-family: 'Oswald', sans-serif;
-    right: 1%;
-    top: 4.8%;
-}
-
-/* Item Slots */
-.inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+.equipment-slot .item-slot-img {
+    width: 100%;
     height: 100%;
-}
-
-.item-slot {
-    position: relative;
-    width: 98px;
-    height: 98px;
-    float: left;
-    background-color: rgba(66, 68, 68, 0.6);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    margin: 3px;
-    transition: opacity 0.2s ease 0s;
-    opacity: 90%;
-    z-index: 1;
-}
-
-.item-slot:hover {
-    background-color: rgba(134, 235, 198, 0.2);
-    box-shadow: 0 0 1vh #9affd0;
-    border: 1px solid #9affd0;
-    opacity: 50%;
-}
-
-.item-slot.has-item {
-    border-color: #2ec3a1;
-}
-
-.item-slot.drag-over {
-    background: rgba(46, 195, 161, 0.2);
-    border-color: #2ec3a1;
-}
-
-.item-slot.selected {
-    box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.5);
-    border-color: #2ec3a1;
-}
-
-/* Item Styling */
-.item-slot-img {
-    max-width: 100%;
-    max-height: 100%;
-    padding: 0.5vw;
-}
-
-.item-slot-img img {
-    display: block;
-    position: relative;
-    margin: 0 auto;
-    margin-top: 9%;
-    width: auto;
-    height: auto;
-    max-width: 92%;
-    max-height: 100%;
-}
-
-.item-slot-amount {
-    position: absolute;
-    top: 0.3%;
-    right: 0.15vw;
-    background-color: #41414b00;
-    padding-right: 4px;
-    padding-left: 4px;
-}
-
-.item-slot-amount > p {
-    color: #ffffff;
-    text-align: right;
-    font-size: 1.25vh;
-    font-weight: 400;
-    cursor: none;
-    font-family: "Oswald";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    font-size: 20px;
 }
 
 .placeholder-icon {
-    color: #34363a4b;
-    font-size: 2.6rem;
+    opacity: 0.5;
+}
+
+/* Inventory Sections */
+.pocket-inventory-icon, .player-inventory-icon, .backpack-inventory-icon, .other-inventory-icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid var(--color-accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    font-size: 18px;
+}
+
+.pocket-inventory-icon {
+    top: 80px;
+    left: 380px;
+}
+
+.player-inventory-icon {
+    top: 80px;
+    left: 650px;
+}
+
+.backpack-inventory-icon {
+    top: 350px;
+    left: 380px;
+}
+
+.other-inventory-icon {
+    top: 80px;
+    right: 80px;
+}
+
+/* Inventory Info Labels */
+.pocket-inv-info, .player-inv-info, .backpack-inv-info, .other-inv-info {
+    position: absolute;
+    color: var(--color-accent);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.pocket-inv-info {
+    top: 85px;
+    left: 430px;
+}
+
+.player-inv-info {
+    top: 85px;
+    left: 700px;
+}
+
+.backpack-inv-info {
+    top: 355px;
+    left: 430px;
+}
+
+.other-inv-info {
+    top: 85px;
+    right: 130px;
+}
+
+#player-inv-weight, #other-inv-weight {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 2px;
+}
+
+/* Inventory Grids */
+.player-inventory-first, .player-inventory, .player-inventory-backpack, .other-inventory {
+    position: absolute;
+    background: rgba(20, 20, 20, 0.9);
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.player-inventory-first {
+    top: 130px;
+    left: 380px;
+    width: 200px;
+    height: 180px;
+}
+
+.player-inventory {
+    top: 130px;
+    left: 650px;
+    width: 350px;
+    height: 180px;
+}
+
+.player-inventory-backpack {
+    top: 400px;
+    left: 380px;
+    width: 350px;
+    height: 280px;
+}
+
+.other-inventory {
+    top: 130px;
+    right: 80px;
+    width: 350px;
+    height: 180px;
+}
+
+.inventory-grid {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+#pocket-inventory {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+#player-inventory {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+#backpack-inventory {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+
+#other-inventory {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+/* Inventory Slots */
+.inventory-slot {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid #555;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 45px;
+}
+
+.inventory-slot:hover {
+    background: rgba(60, 60, 60, 0.9);
+    border-color: var(--color-accent);
+    transform: scale(1.02);
+}
+
+.inventory-slot.has-item {
+    background: rgba(50, 50, 50, 0.9);
+    border-color: var(--color-accent);
+}
+
+.inventory-slot.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.inventory-slot.drag-over {
+    background: rgba(85, 233, 171, 0.2);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 10px rgba(85, 233, 171, 0.5);
+}
+
+.item-icon {
+    font-size: 20px;
+    color: var(--color-accent);
+    margin-bottom: 2px;
+}
+
+.item-quantity {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: bold;
 }
 
 /* Personal Information */
+.ply-number-line, .phone-number-line, .player-id-line, .citizen-id-line {
+    position: absolute;
+    width: 200px;
+    height: 2px;
+    background: var(--color-accent);
+}
+
 .ply-number-line {
-    position: absolute;
-    background-color: rgb(137, 245, 169);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 18%;
-    left: 5%;
-    height: 35px;
-    width: 3px;
-}
-
-.player-name-title {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    color: rgb(160, 160, 160);
-    bottom: 21%;
-    left: 6%;
-    font-weight: 300;
-}
-
-.player-name {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 15px;
-    color: white;
-    bottom: 18%;
-    left: 6%;
-    font-weight: 300;
+    bottom: 180px;
+    left: 80px;
 }
 
 .phone-number-line {
-    position: absolute;
-    background-color: rgb(214, 137, 245);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 18%;
-    left: 18%;
-    height: 35px;
-    width: 3px;
-}
-
-.phone-number-title {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    color: rgb(160, 160, 160);
-    bottom: 21%;
-    left: 19%;
-    font-weight: 300;
-}
-
-.phone-number {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 15px;
-    color: white;
-    bottom: 18%;
-    left: 19%;
-    font-weight: 300;
+    bottom: 140px;
+    left: 80px;
 }
 
 .player-id-line {
-    position: absolute;
-    background-color: rgb(137, 232, 245);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 10%;
-    left: 5%;
-    height: 35px;
-    width: 3px;
-}
-
-.player-id-title {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    color: rgb(160, 160, 160);
-    bottom: 13%;
-    left: 6%;
-    font-weight: 300;
-}
-
-.player-id {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 15px;
-    color: white;
-    bottom: 10%;
-    left: 6%;
-    font-weight: 300;
+    bottom: 100px;
+    left: 80px;
 }
 
 .citizen-id-line {
+    bottom: 60px;
+    left: 80px;
+}
+
+.player-name-title, .phone-number-title, .player-id-title, .citizen-id-title {
     position: absolute;
-    background-color: rgb(245, 207, 137);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 10%;
-    left: 18%;
-    height: 35px;
-    width: 3px;
+    color: var(--color-accent);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.player-name-title {
+    bottom: 195px;
+    left: 80px;
+}
+
+.phone-number-title {
+    bottom: 155px;
+    left: 80px;
+}
+
+.player-id-title {
+    bottom: 115px;
+    left: 80px;
 }
 
 .citizen-id-title {
+    bottom: 75px;
+    left: 80px;
+}
+
+.player-name, .phone-number, .player-id, .citizen-id {
     position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    color: rgb(160, 160, 160);
-    bottom: 13%;
-    left: 19%;
-    font-weight: 300;
+    color: #fff;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.player-name {
+    bottom: 185px;
+    left: 80px;
+}
+
+.phone-number {
+    bottom: 145px;
+    left: 80px;
+}
+
+.player-id {
+    bottom: 105px;
+    left: 80px;
 }
 
 .citizen-id {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
-    font-size: 15px;
-    color: white;
-    bottom: 10%;
-    left: 19%;
-    font-weight: 300;
+    bottom: 65px;
+    left: 80px;
 }
 
 /* Item Information Panel */
 .ply-iteminfo-container {
-    font-family: 'Oswald', sans-serif;
-    opacity: 50%;
-    border-radius: 3px;
-    font-size: 1.35vh;
-    font-weight: 0;
-    left: 41%;
-    max-height: 55%;
-    min-height: 50px;
-    overflow: hidden;
-    padding: 1%;
     position: absolute;
-    top: 50%;
-    transition: opacity 0.6s ease;
-    width: 13%;
-    z-index: 10000;
-    color: rgba(220, 220, 220, 1);
-    background-color: rgba(46, 48, 48, 0.9);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    bottom: 20px;
+    right: 80px;
+    width: 300px;
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    padding: 15px;
 }
 
 .item-info-title {
-    text-transform: capitalize;
-    font-weight: 300;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.9vh;
-    color: white;
-    padding-top: 1px;
-    margin-top: -5%;
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 8px;
 }
 
 .item-info-line {
-    position: absolute;
-    font-family: 'Oswald', sans-serif;
     width: 100%;
-    background-color: white;
-    height: 0vh;
+    height: 2px;
+    background: var(--color-accent);
+    margin-bottom: 10px;
 }
 
 .item-info-description {
-    text-transform: capitalize;
-    font-size: 1.4vh;
-    font-family: 'Oswald', sans-serif;
-    color: white;
-    padding-top: .5vh;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-/* Drag and Drop Styles */
-.dragging {
-    opacity: 0.5;
-    transform: scale(0.9);
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-.drop-zone {
-    border: 2px dashed #2ec3a1;
-    background: rgba(46, 195, 161, 0.1);
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
-/* Scrollbar Styles */
-.other-inventory::-webkit-scrollbar {
-    width: 6px;
-    background: var(--color-secondary);
+.inv-container {
+    animation: fadeIn 0.3s ease-out;
 }
 
-.other-inventory::-webkit-scrollbar-thumb {
-    background-color: rgba(196, 198, 198, 0.9);
-    border: 1px solid rgba(55, 55, 55, 1);
-    box-shadow: 0 0 1vh rgba(189, 189, 189, 0.3);
+.left-sidebar {
+    animation: slideIn 0.4s ease-out;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-    .player-body-container {
-        left: 10%;
-        width: 20%;
+/* Responsive adjustments */
+@media (max-width: 1600px) {
+    .player-inventory, .other-inventory {
+        width: 320px;
     }
     
-    .player-inventory {
-        left: 30%;
+    .player-inventory-backpack {
+        width: 320px;
+    }
+}
+
+@media (max-width: 1400px) {
+    .player-inventory, .other-inventory {
+        width: 280px;
+    }
+    
+    .player-inventory-backpack {
+        width: 280px;
     }
     
     .other-inventory {
-        right: 5%;
+        right: 40px;
     }
 }

@@ -4,23 +4,18 @@ INVENTORY.IsOpen = false
 INVENTORY.Panel = nil
 
 local INVENTORY_KEY = KEY_TAB
-local INVENTORY_WIDTH = 1400
-local INVENTORY_HEIGHT = 900
 
 function INVENTORY:CreatePanel()
     if IsValid(self.Panel) then
         self.Panel:Remove()
     end
     
-    self.Panel = vgui.Create("DFrame")
-    self.Panel:SetSize(INVENTORY_WIDTH, INVENTORY_HEIGHT)
-    self.Panel:Center()
-    self.Panel:SetTitle("")
-    self.Panel:SetDraggable(false)
-    self.Panel:SetSizable(false)
-    self.Panel:ShowCloseButton(false)
-    self.Panel:SetDeleteOnClose(false)
+    self.Panel = vgui.Create("DPanel")
+    self.Panel:SetSize(ScrW(), ScrH())
+    self.Panel:SetPos(0, 0)
     self.Panel:MakePopup()
+    self.Panel:SetKeyboardInputEnabled(false)
+    self.Panel:SetMouseInputEnabled(true)
     
     local htmlPanel = vgui.Create("DHTML", self.Panel)
     htmlPanel:Dock(FILL)
