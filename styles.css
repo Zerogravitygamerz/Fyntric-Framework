@@ -1,4 +1,6 @@
-/* NoPixel Inventory UI Styles */
+/* NoPixel Inventory UI Styles - Realistic Design */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 * {
     margin: 0;
@@ -6,50 +8,61 @@
     box-sizing: border-box;
 }
 
+:root {
+    --color-primary-inventory-bg: radial-gradient(90% 90% at 45% 45%, rgba(10, 15, 20, 0.9), rgba(15, 20, 25, 0.9));
+    --color-primary: rgba(8, 8, 8, 0.9);
+    --color-secondary: rgba(18, 18, 18, 0.9);
+    --color-accent: rgb(85, 233, 171);
+}
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Oswald', sans-serif;
     background: #0c0e12;
     color: #ecf0f1;
     overflow: hidden;
 }
 
-.nui-wrapper {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.inventory-container {
-    display: flex;
-    gap: 20px;
-    max-width: 1792px;
+#qbcore-inventory {
+    position: absolute;
     width: 100%;
     height: 100%;
-    max-height: 800px;
+    left: 0vw;
+    display: block;
+    user-select: none;
+    background: var(--color-primary-inventory-bg);
 }
 
-/* Left Panel Styles */
-.left-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 200px;
+.inv-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
-.equipment-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Character Body Positioning */
+.player-body-container {
+    position: absolute;
+    bottom: 27.8%;
+    margin: 0 auto;
+    left: 15%;
+    right: 0;
+    text-align: center;
+    width: 15%;
+    height: 55%;
+    padding: 10%;
 }
 
-.equipment-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+.player-body {
+    position: absolute;
+    bottom: 48%;
+    margin: 0 auto;
+    left: -23%;
+    right: 0;
+    text-align: center;
+    width: 15%;
+    height: 45%;
 }
 
+/* Equipment Slots */
 .equipment-slot {
     width: 60px;
     height: 60px;
@@ -61,7 +74,7 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
+    position: absolute;
 }
 
 .equipment-slot:hover {
@@ -73,83 +86,201 @@ body {
     border-color: #2ec3a1;
 }
 
-.character-section {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+/* Inventory Sections */
+.player-inventory {
+    position: absolute;
+    top: 8%;
+    left: 38.3%;
+    width: 100.22%;
+    max-width: 102.22%;
+    height: 80%;
+    max-height: 132%;
+    float: right;
+    z-index: 100;
 }
 
-.character-image {
-    width: 120px;
-    height: 180px;
-    background: radial-gradient(#32343961, #32343907);
-    border: 1px solid #2c3e50;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.player-inventory-first {
+    position: absolute;
+    margin-top: -0.6rem;
+    margin-left: -83%;
+    width: 19%;
+    height: 78.2%;
+    padding: 10px;
+    z-index: 10;
 }
 
-.personal-info {
-    background: radial-gradient(#32343961, #32343907);
-    border: 1px solid #2c3e50;
-    border-radius: 8px;
-    padding: 15px;
+.player-inventory-backpack {
+    position: absolute;
+    margin-top: 24.6rem;
+    margin-left: -1%;
+    width: 100.22%;
+    max-width: 102.22%;
+    height: 80%;
+    padding: 10px;
+    float: right;
+    z-index: 100;
 }
 
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
+.other-inventory {
+    position: absolute;
+    top: 8%;
+    right: 1.5%;
+    width: 89%;
+    max-width: 102.22%;
+    height: 45%;
+    max-height: 132%;
+    float: right;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    z-index: 100;
+}
+
+/* Inventory Icons */
+.player-inventory-icon {
+    position: absolute;
+    width: 2.5%;
+    height: 4.5%;
+    padding: 9.5px;
+    left: 35.2%;
+    top: 12.5%;
+    text-align: center;
+    font-size: 23px;
+    color: #31d4a9;
+    background-color: rgba(49, 212, 169, 0.3);
+    box-shadow: 0 0 1vh #31d4a9;
+    border: 1px solid #31d4a9;
+}
+
+.other-inventory-icon {
+    position: absolute;
+    width: 2.5%;
+    height: 4.5%;
+    padding: 9.5px;
+    right: 28.2%;
+    top: 12.5%;
+    text-align: center;
+    font-size: 23px;
+    color: #31d4a9;
+    background-color: rgba(49, 212, 169, 0.3);
+    box-shadow: 0 0 1vh #31d4a9;
+    border: 1px solid #31d4a9;
+}
+
+.pocket-inventory-icon {
+    position: absolute;
+    width: 2.5%;
+    height: 4.5%;
+    padding: 9.5px;
+    left: 6.2%;
+    top: 12.5%;
+    text-align: center;
+    font-size: 23px;
+    color: #31d4a9;
+    background-color: rgba(49, 212, 169, 0.3);
+    box-shadow: 0 0 1vh #31d4a9;
+    border: 1px solid #31d4a9;
+}
+
+.backpack-inventory-icon {
+    position: absolute;
+    width: 2.5%;
+    height: 4.5%;
+    padding: 9.5px;
+    left: 35.2%;
+    top: 50.5%;
+    text-align: center;
+    font-size: 23px;
+    color: #31d4a9;
+    background-color: rgba(49, 212, 169, 0.3);
+    box-shadow: 0 0 1vh #31d4a9;
+    border: 1px solid #31d4a9;
+}
+
+/* Inventory Labels */
+#player-inv-label {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01vh;
+    left: 122%;
+    bottom: 31.5px;
+    float: left;
+    text-transform: normal;
+    cursor: none;
+}
+
+#player-inv-weight {
+    position: relative;
+    color: rgb(175, 175, 175);
     font-size: 14px;
+    font-weight: 200;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.1vh;
+    bottom: 28px;
+    right: -41.8%;
+    float: right;
 }
 
-.info-row:last-child {
-    margin-bottom: 0;
+#other-inv-label {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01vh;
+    left: 49%;
+    bottom: 31.5px;
+    float: left;
+    text-transform: normal;
+    cursor: none;
 }
 
-/* Middle and Right Panel Styles */
-.middle-panel, .right-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 1;
-}
-
-.right-panel {
-    max-width: 300px;
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.panel-header h3 {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.weight-info {
+#other-inv-weight {
+    position: relative;
+    color: rgb(175, 175, 175);
     font-size: 14px;
+    font-weight: 200;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.1vh;
+    bottom: 28px;
+    right: 32.5%;
+    transform: translateX(5.5%);
+    float: right;
+    cursor: none;
+    text-align: left;
 }
 
-.inv-panel {
-    background: radial-gradient(#32343961, #32343907);
-    border: 1px solid #2c3e50;
-    border-radius: 8px;
-    padding: 15px;
-    height: 20rem;
-    max-width: 555px;
-    overflow-y: auto;
+#pocket-inv-label {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01vh;
+    left: 9.5%;
+    bottom: -145px;
+    float: left;
+    text-transform: normal;
+    cursor: none;
 }
 
-.inv-panel-max-height {
-    max-height: 20rem;
+#backpack-inv-label {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01vh;
+    left: 35.5%;
+    margin-top: 29%;
+    float: left;
+    text-transform: normal;
+    cursor: none;
 }
 
+/* Item Slots */
 .inventory-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -157,65 +288,75 @@ body {
     height: 100%;
 }
 
-.inventory-slot {
-    width: 60px;
-    height: 60px;
-    background: radial-gradient(#32343961, #32343907);
-    border: 1px solid #2c3e50;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.item-slot {
     position: relative;
+    width: 98px;
+    height: 98px;
+    float: left;
+    background-color: rgba(66, 68, 68, 0.6);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    margin: 3px;
+    transition: opacity 0.2s ease 0s;
+    opacity: 90%;
+    z-index: 1;
 }
 
-.inventory-slot:hover {
+.item-slot:hover {
+    background-color: rgba(134, 235, 198, 0.2);
+    box-shadow: 0 0 1vh #9affd0;
+    border: 1px solid #9affd0;
+    opacity: 50%;
+}
+
+.item-slot.has-item {
     border-color: #2ec3a1;
-    box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.25);
 }
 
-.inventory-slot.has-item {
-    border-color: #2ec3a1;
-}
-
-.inventory-slot.drag-over {
+.item-slot.drag-over {
     background: rgba(46, 195, 161, 0.2);
     border-color: #2ec3a1;
 }
 
-.inventory-slot.selected {
+.item-slot.selected {
     box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.5);
     border-color: #2ec3a1;
 }
 
-/* Icon Styles */
-.icon-bg {
-    background: rgba(0, 0, 0, 0);
-    background: linear-gradient(315deg, rgba(0, 0, 0, 0) 20%, rgba(1, 255, 196, 0.056) 100%);
-    width: 30px;
-    height: 30px;
-    transform: rotate(45deg);
-    margin: 0.8em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Item Styling */
+.item-slot-img {
+    max-width: 100%;
+    max-height: 100%;
+    padding: 0.5vw;
 }
 
-.icon-bg-2 {
-    background: rgba(0, 0, 0, 0);
-    background: linear-gradient(315deg, rgba(0, 0, 0, 0) 20%, rgba(1, 255, 196, 0.091) 100%);
-    width: 24px;
-    height: 24px;
-    padding-top: 0.2em;
-    padding-left: 0.2em;
+.item-slot-img img {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 9%;
+    width: auto;
+    height: auto;
+    max-width: 92%;
+    max-height: 100%;
 }
 
-.icon {
-    transform: rotate(-45deg);
-    color: #2ec3a1;
-    font-size: 1.3rem;
+.item-slot-amount {
+    position: absolute;
+    top: 0.3%;
+    right: 0.15vw;
+    background-color: #41414b00;
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+.item-slot-amount > p {
+    color: #ffffff;
+    text-align: right;
+    font-size: 1.25vh;
+    font-weight: 400;
+    cursor: none;
+    font-family: "Oswald";
 }
 
 .placeholder-icon {
@@ -223,87 +364,202 @@ body {
     font-size: 2.6rem;
 }
 
-.small-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    background-color: #2ec3a1;
-    display: inline-block;
-}
-
-.glow {
-    box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.25);
-    -webkit-box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.25);
-    -moz-box-shadow: 1px -1px 5px 1px rgba(46, 195, 161, 0.25);
-}
-
-.text-np {
-    color: #2ec3a1;
-}
-
-.bg-np {
-    background-color: #2ec3a1;
-}
-
-.bg-darkblue {
-    background: #0c0e12;
-}
-
-.bg-invitem {
-    background: radial-gradient(#32343961, #32343907);
-}
-
-.shortcut-icon {
-    background-color: #2ec3a00d;
-    color: #2ec3a0b1;
-    font-size: 0.7em;
-    width: 1.4em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Item Styles */
-.inventory-item {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    cursor: grab;
-}
-
-.inventory-item:active {
-    cursor: grabbing;
-}
-
-.item-icon {
-    font-size: 24px;
-    color: #2ec3a1;
-    margin-bottom: 4px;
-}
-
-.item-quantity {
+/* Personal Information */
+.ply-number-line {
+    overflow: hidden;
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background: rgba(46, 195, 161, 0.8);
-    color: white;
-    font-size: 10px;
-    padding: 1px 4px;
-    border-radius: 3px;
-    min-width: 16px;
-    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    background-color: rgb(137, 245, 169);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    top: 75%;
+    margin-left: 6%;
+    height: 5.6vh;
+    width: 0.7vh;
 }
 
-.item-name {
-    font-size: 10px;
-    text-align: center;
-    color: #ecf0f1;
-    margin-top: 2px;
-    word-wrap: break-word;
-    max-width: 100%;
+.player-name-title {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.6vh;
+    color: rgb(160, 160, 160);
+    top: 73.5%;
+    margin-left: 6%;
+    font-weight: 300;
+}
+
+.player-name {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.95vh;
+    color: white;
+    top: 75%;
+    margin-left: 6%;
+    font-weight: 300;
+}
+
+.phone-number-line {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    background-color: rgb(214, 137, 245);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    top: 75%;
+    margin-left: 17.5%;
+    height: 5.6vh;
+    width: 0.7vh;
+}
+
+.phone-number-title {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.6vh;
+    color: rgb(160, 160, 160);
+    top: 73.5%;
+    margin-left: 17.5%;
+    font-weight: 300;
+}
+
+.phone-number {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.95vh;
+    color: white;
+    top: 75%;
+    margin-left: 17.5%;
+    font-weight: 300;
+}
+
+.player-id-line {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    background-color: rgb(137, 232, 245);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    top: 85%;
+    margin-left: 6%;
+    height: 5.6vh;
+    width: 0.7vh;
+}
+
+.player-id-title {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.6vh;
+    color: rgb(160, 160, 160);
+    top: 83.5%;
+    margin-left: 6%;
+    font-weight: 300;
+}
+
+.player-id {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.95vh;
+    color: white;
+    top: 85%;
+    margin-left: 6%;
+    font-weight: 300;
+}
+
+.citizen-id-line {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    background-color: rgb(245, 207, 137);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+    top: 85%;
+    margin-left: 17.5%;
+    height: 5.6vh;
+    width: 0.7vh;
+}
+
+.citizen-id-title {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.6vh;
+    color: rgb(160, 160, 160);
+    top: 83.5%;
+    margin-left: 17.5%;
+    font-weight: 300;
+}
+
+.citizen-id {
+    overflow: hidden;
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    padding: 1%;
+    font-size: 1.95vh;
+    color: white;
+    top: 85%;
+    margin-left: 17.5%;
+    font-weight: 300;
+}
+
+/* Item Information Panel */
+.ply-iteminfo-container {
+    font-family: 'Oswald', sans-serif;
+    opacity: 50%;
+    border-radius: 3px;
+    font-size: 1.35vh;
+    font-weight: 0;
+    left: 41%;
+    max-height: 55%;
+    min-height: 50px;
+    overflow: hidden;
+    padding: 1%;
+    position: absolute;
+    top: 50%;
+    transition: opacity 0.6s ease;
+    width: 13%;
+    z-index: 10000;
+    color: rgba(220, 220, 220, 1);
+    background-color: rgba(46, 48, 48, 0.9);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
+}
+
+.item-info-title {
+    text-transform: capitalize;
+    font-weight: 300;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.9vh;
+    color: white;
+    padding-top: 1px;
+    margin-top: -5%;
+}
+
+.item-info-line {
+    position: absolute;
+    font-family: 'Oswald', sans-serif;
+    width: 100%;
+    background-color: white;
+    height: 0vh;
+}
+
+.item-info-description {
+    text-transform: capitalize;
+    font-size: 1.4vh;
+    font-family: 'Oswald', sans-serif;
+    color: white;
+    padding-top: .5vh;
 }
 
 /* Drag and Drop Styles */
@@ -318,63 +574,29 @@ body {
 }
 
 /* Scrollbar Styles */
-.inv-panel::-webkit-scrollbar {
-    width: 8px;
+.other-inventory::-webkit-scrollbar {
+    width: 6px;
+    background: var(--color-secondary);
 }
 
-.inv-panel::-webkit-scrollbar-track {
-    background: #2c3e50;
-    border-radius: 4px;
-}
-
-.inv-panel::-webkit-scrollbar-thumb {
-    background: #2ec3a1;
-    border-radius: 4px;
-    opacity: 0.6;
-}
-
-.inv-panel::-webkit-scrollbar-thumb:hover {
-    background: #26a085;
+.other-inventory::-webkit-scrollbar-thumb {
+    background-color: rgba(196, 198, 198, 0.9);
+    border: 1px solid rgba(55, 55, 55, 1);
+    box-shadow: 0 0 1vh rgba(189, 189, 189, 0.3);
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .inventory-container {
-        flex-direction: column;
-        gap: 15px;
+    .player-body-container {
+        left: 10%;
+        width: 20%;
     }
     
-    .right-panel {
-        max-width: none;
-        flex-direction: row;
-        gap: 15px;
+    .player-inventory {
+        left: 30%;
     }
     
-    .ground-section, .trunk-section {
-        flex: 1;
-    }
-}
-
-@media (max-width: 768px) {
-    .nui-wrapper {
-        padding: 10px;
-    }
-    
-    .inventory-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .inventory-slot, .equipment-slot {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .character-image {
-        width: 100px;
-        height: 150px;
-    }
-    
-    .right-panel {
-        flex-direction: column;
+    .other-inventory {
+        right: 5%;
     }
 }

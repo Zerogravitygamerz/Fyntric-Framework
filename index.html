@@ -8,140 +8,111 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="nui-wrapper">
-        <div class="inventory-container">
-            <!-- Left Panel - Character Equipment -->
-            <div class="left-panel">
-                <!-- Equipment Slots -->
-                <div class="equipment-section">
-                    <div class="equipment-row">
-                        <div class="equipment-slot" data-slot="headphones">
-                            <div class="icon-bg">
-                                <i class="fas fa-headphones icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="mask">
-                            <div class="icon-bg">
-                                <i class="fas fa-mask icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="glasses">
-                            <div class="icon-bg">
-                                <i class="fas fa-glasses icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="equipment-row">
-                        <div class="equipment-slot" data-slot="vest">
-                            <div class="icon-bg">
-                                <i class="fas fa-vest icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="shoes">
-                            <div class="icon-bg">
-                                <i class="fas fa-shoe-prints icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="equipment-row">
-                        <div class="equipment-slot" data-slot="wallet">
-                            <div class="icon-bg">
-                                <i class="fas fa-wallet icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="phone">
-                            <div class="icon-bg">
-                                <i class="fas fa-mobile-alt icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="keys">
-                            <div class="icon-bg">
-                                <i class="fas fa-key icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="equipment-row">
-                        <div class="equipment-slot" data-slot="credit-card">
-                            <div class="icon-bg">
-                                <i class="fas fa-credit-card icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                        <div class="equipment-slot" data-slot="backpack">
-                            <div class="icon-bg">
-                                <i class="fas fa-backpack icon placeholder-icon"></i>
-                            </div>
-                        </div>
-                    </div>
+    <div id="qbcore-inventory">
+        <div class="inv-container">
+            <!-- Character Body Container -->
+            <div class="player-body-container">
+                <div class="player-body">
+                    <img src="body.png" alt="Character Body" style="width: 198px; height: 428px;">
                 </div>
-
-                <!-- Character Image -->
-                <div class="character-section">
-                    <div class="character-image">
-                        <i class="fas fa-user placeholder-icon"></i>
-                    </div>
+                
+                <!-- Equipment Slots positioned around character body -->
+                <div class="equipment-slot" data-slot="head" style="position: absolute; top: 5%; left: 45%;">
+                    <div class="item-slot-img"><i class="fas fa-hard-hat placeholder-icon"></i></div>
                 </div>
-
-                <!-- Personal Info -->
-                <div class="personal-info">
-                    <div class="info-row">
-                        <span class="text-np">Name:</span>
-                        <span>John Doe</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="text-np">Job:</span>
-                        <span>Civilian</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="text-np">Cash:</span>
-                        <span class="text-np">$1,250</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="text-np">Bank:</span>
-                        <span class="text-np">$15,000</span>
-                    </div>
+                <div class="equipment-slot" data-slot="left-arm" style="position: absolute; top: 25%; left: 15%;">
+                    <div class="item-slot-img"><i class="fas fa-tshirt placeholder-icon"></i></div>
+                </div>
+                <div class="equipment-slot" data-slot="right-arm" style="position: absolute; top: 25%; right: 15%;">
+                    <div class="item-slot-img"><i class="fas fa-tshirt placeholder-icon"></i></div>
+                </div>
+                <div class="equipment-slot" data-slot="body" style="position: absolute; top: 35%; left: 45%;">
+                    <div class="item-slot-img"><i class="fas fa-vest placeholder-icon"></i></div>
+                </div>
+                <div class="equipment-slot" data-slot="left-leg" style="position: absolute; top: 70%; left: 35%;">
+                    <div class="item-slot-img"><i class="fas fa-shoe-prints placeholder-icon"></i></div>
+                </div>
+                <div class="equipment-slot" data-slot="right-leg" style="position: absolute; top: 70%; right: 35%;">
+                    <div class="item-slot-img"><i class="fas fa-shoe-prints placeholder-icon"></i></div>
                 </div>
             </div>
 
-            <!-- Middle Panel - Player Inventory -->
-            <div class="middle-panel">
-                <div class="panel-header">
-                    <h3 class="text-np">Player Inventory</h3>
-                    <div class="weight-info">
-                        <span class="text-np">Weight: 45/100 kg</span>
-                    </div>
-                </div>
-                <div class="inv-panel player-inventory">
-                    <div class="inventory-grid" id="player-inventory">
-                        <!-- Player inventory slots will be generated by JavaScript -->
-                    </div>
+            <!-- Pockets Inventory -->
+            <div class="pocket-inventory-icon">
+                <i class="fas fa-pocket"></i>
+            </div>
+            <div class="pocket-inv-info">
+                <div id="pocket-inv-label">Pockets</div>
+            </div>
+            <div class="player-inventory-first">
+                <div class="inventory-grid" id="pocket-inventory">
+                    <!-- Pocket inventory slots will be generated by JavaScript -->
                 </div>
             </div>
 
-            <!-- Right Panel - Ground/Trunk -->
-            <div class="right-panel">
-                <!-- Ground Inventory -->
-                <div class="ground-section">
-                    <div class="panel-header">
-                        <h3 class="text-np">Ground</h3>
-                    </div>
-                    <div class="inv-panel ground-inventory">
-                        <div class="inventory-grid" id="ground-inventory">
-                            <!-- Ground inventory slots will be generated by JavaScript -->
-                        </div>
-                    </div>
+            <!-- Player Inventory -->
+            <div class="player-inventory-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="player-inv-info">
+                <div id="player-inv-label">Player</div>
+                <div id="player-inv-weight">0.70kg/160.00kg</div>
+            </div>
+            <div class="player-inventory">
+                <div class="inventory-grid" id="player-inventory">
+                    <!-- Player inventory slots will be generated by JavaScript -->
                 </div>
+            </div>
 
-                <!-- Trunk Inventory -->
-                <div class="trunk-section">
-                    <div class="panel-header">
-                        <h3 class="text-np">Trunk</h3>
-                    </div>
-                    <div class="inv-panel trunk-inventory">
-                        <div class="inventory-grid" id="trunk-inventory">
-                            <!-- Trunk inventory slots will be generated by JavaScript -->
-                        </div>
-                    </div>
+            <!-- Backpack Inventory -->
+            <div class="backpack-inventory-icon">
+                <i class="fas fa-backpack"></i>
+            </div>
+            <div class="backpack-inv-info">
+                <div id="backpack-inv-label">Backpack</div>
+            </div>
+            <div class="player-inventory-backpack">
+                <div class="inventory-grid" id="backpack-inventory">
+                    <!-- Backpack inventory slots will be generated by JavaScript -->
                 </div>
+            </div>
+
+            <!-- Other Inventory (24/7 Supermarket) -->
+            <div class="other-inventory-icon">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="other-inv-info">
+                <div id="other-inv-label">24/7 Supermarket</div>
+                <div id="other-inv-weight">0.00kg/100.00kg</div>
+            </div>
+            <div class="other-inventory">
+                <div class="inventory-grid" id="other-inventory">
+                    <!-- Other inventory slots will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="ply-number-line"></div>
+            <div class="player-name-title">Name</div>
+            <div class="player-name">POOYATEST</div>
+            
+            <div class="phone-number-line"></div>
+            <div class="phone-number-title">Phone Number</div>
+            <div class="phone-number">3062243113</div>
+            
+            <div class="player-id-line"></div>
+            <div class="player-id-title">State ID</div>
+            <div class="player-id">1</div>
+            
+            <div class="citizen-id-line"></div>
+            <div class="citizen-id-title">Citizen ID</div>
+            <div class="citizen-id">SQZ14967</div>
+
+            <!-- Item Information Panel -->
+            <div class="ply-iteminfo-container" style="display: none;">
+                <div class="item-info-title">Item Name</div>
+                <div class="item-info-line"></div>
+                <div class="item-info-description">Item description goes here</div>
             </div>
         </div>
     </div>
