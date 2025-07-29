@@ -38,13 +38,53 @@ body {
     height: 100%;
 }
 
+/* Left Sidebar */
+.left-sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 100vh;
+    background-color: rgba(20, 20, 20, 0.9);
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    z-index: 5;
+}
+
+.sidebar-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(55, 55, 55, 0.8);
+    border: 1px solid #444;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.sidebar-icon:hover {
+    background-color: rgba(49, 212, 169, 0.2);
+    border-color: #31d4a9;
+}
+
+.sidebar-icon i {
+    font-size: 18px;
+    color: #888;
+}
+
 /* Character Body Positioning */
 .player-body-container {
     position: absolute;
-    top: 15%;
-    left: 5%;
-    width: 25%;
-    height: 70%;
+    top: 12%;
+    left: 12%;
+    width: 20%;
+    height: 65%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,23 +92,24 @@ body {
 
 .player-body {
     position: relative;
-    width: 198px;
-    height: 428px;
+    width: 180px;
+    height: 390px;
 }
 
 /* Equipment Slots */
 .equipment-slot {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: radial-gradient(#32343961, #32343907);
     border: 1px solid #2c3e50;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
     position: absolute;
+    z-index: 60;
 }
 
 .equipment-slot:hover {
@@ -84,40 +125,40 @@ body {
 .player-inventory-first {
     position: absolute;
     top: 8%;
-    left: 2%;
-    width: 200px;
-    height: 300px;
-    padding: 10px;
+    left: 5%;
+    width: 180px;
+    height: 280px;
+    padding: 8px;
     z-index: 10;
 }
 
 .player-inventory {
     position: absolute;
     top: 8%;
-    left: 32%;
-    width: 520px;
-    height: 320px;
-    padding: 10px;
+    left: 38%;
+    width: 480px;
+    height: 300px;
+    padding: 8px;
     z-index: 100;
 }
 
 .player-inventory-backpack {
     position: absolute;
-    top: 45%;
-    left: 32%;
-    width: 520px;
-    height: 620px;
-    padding: 10px;
+    top: 48%;
+    left: 38%;
+    width: 480px;
+    height: 580px;
+    padding: 8px;
     z-index: 100;
 }
 
 .other-inventory {
     position: absolute;
     top: 8%;
-    right: 2%;
-    width: 520px;
-    height: 320px;
-    padding: 10px;
+    right: 1%;
+    width: 480px;
+    height: 300px;
+    padding: 8px;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 100;
@@ -126,13 +167,13 @@ body {
 /* Inventory Icons */
 .pocket-inventory-icon {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    left: 2%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    left: 5%;
     top: 4%;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #31d4a9;
     background-color: rgba(49, 212, 169, 0.3);
     box-shadow: 0 0 1vh #31d4a9;
@@ -144,13 +185,13 @@ body {
 
 .player-inventory-icon {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    left: 32%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    left: 38%;
     top: 4%;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #31d4a9;
     background-color: rgba(49, 212, 169, 0.3);
     box-shadow: 0 0 1vh #31d4a9;
@@ -162,13 +203,13 @@ body {
 
 .backpack-inventory-icon {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    left: 32%;
-    top: 41%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    left: 38%;
+    top: 44%;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #31d4a9;
     background-color: rgba(49, 212, 169, 0.3);
     box-shadow: 0 0 1vh #31d4a9;
@@ -180,13 +221,13 @@ body {
 
 .other-inventory-icon {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    right: 2%;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    right: 1%;
     top: 4%;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #31d4a9;
     background-color: rgba(49, 212, 169, 0.3);
     box-shadow: 0 0 1vh #31d4a9;
@@ -200,10 +241,10 @@ body {
 #pocket-inv-label {
     position: absolute;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-family: 'Oswald', sans-serif;
     font-weight: 300;
-    left: 6%;
+    left: 9%;
     top: 4.5%;
     text-transform: normal;
 }
@@ -211,10 +252,10 @@ body {
 #player-inv-label {
     position: absolute;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-family: 'Oswald', sans-serif;
     font-weight: 300;
-    left: 36%;
+    left: 42%;
     top: 4.5%;
     text-transform: normal;
 }
@@ -222,31 +263,31 @@ body {
 #player-inv-weight {
     position: absolute;
     color: rgb(175, 175, 175);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 200;
     font-family: 'Oswald', sans-serif;
-    left: 45%;
+    left: 51%;
     top: 4.8%;
 }
 
 #backpack-inv-label {
     position: absolute;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-family: 'Oswald', sans-serif;
     font-weight: 300;
-    left: 36%;
-    top: 41.5%;
+    left: 42%;
+    top: 44.5%;
     text-transform: normal;
 }
 
 #other-inv-label {
     position: absolute;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-family: 'Oswald', sans-serif;
     font-weight: 300;
-    right: 6%;
+    right: 5%;
     top: 4.5%;
     text-transform: normal;
 }
@@ -254,10 +295,10 @@ body {
 #other-inv-weight {
     position: absolute;
     color: rgb(175, 175, 175);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 200;
     font-family: 'Oswald', sans-serif;
-    right: 2%;
+    right: 1%;
     top: 4.8%;
 }
 
@@ -351,29 +392,29 @@ body {
     background-color: rgb(137, 245, 169);
     border: 1px solid rgba(55, 55, 55, 1);
     box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 15%;
-    left: 2%;
-    height: 40px;
-    width: 4px;
+    bottom: 18%;
+    left: 5%;
+    height: 35px;
+    width: 3px;
 }
 
 .player-name-title {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: rgb(160, 160, 160);
-    bottom: 18%;
-    left: 3%;
+    bottom: 21%;
+    left: 6%;
     font-weight: 300;
 }
 
 .player-name {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: white;
-    bottom: 15%;
-    left: 3%;
+    bottom: 18%;
+    left: 6%;
     font-weight: 300;
 }
 
@@ -382,29 +423,29 @@ body {
     background-color: rgb(214, 137, 245);
     border: 1px solid rgba(55, 55, 55, 1);
     box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 15%;
-    left: 15%;
-    height: 40px;
-    width: 4px;
+    bottom: 18%;
+    left: 18%;
+    height: 35px;
+    width: 3px;
 }
 
 .phone-number-title {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: rgb(160, 160, 160);
-    bottom: 18%;
-    left: 16%;
+    bottom: 21%;
+    left: 19%;
     font-weight: 300;
 }
 
 .phone-number {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: white;
-    bottom: 15%;
-    left: 16%;
+    bottom: 18%;
+    left: 19%;
     font-weight: 300;
 }
 
@@ -413,29 +454,29 @@ body {
     background-color: rgb(137, 232, 245);
     border: 1px solid rgba(55, 55, 55, 1);
     box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 8%;
-    left: 2%;
-    height: 40px;
-    width: 4px;
+    bottom: 10%;
+    left: 5%;
+    height: 35px;
+    width: 3px;
 }
 
 .player-id-title {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: rgb(160, 160, 160);
-    bottom: 11%;
-    left: 3%;
+    bottom: 13%;
+    left: 6%;
     font-weight: 300;
 }
 
 .player-id {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: white;
-    bottom: 8%;
-    left: 3%;
+    bottom: 10%;
+    left: 6%;
     font-weight: 300;
 }
 
@@ -444,29 +485,29 @@ body {
     background-color: rgb(245, 207, 137);
     border: 1px solid rgba(55, 55, 55, 1);
     box-shadow: 0 0 1vh rgba(0, 0, 0, 0.3);
-    bottom: 8%;
-    left: 15%;
-    height: 40px;
-    width: 4px;
+    bottom: 10%;
+    left: 18%;
+    height: 35px;
+    width: 3px;
 }
 
 .citizen-id-title {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: rgb(160, 160, 160);
-    bottom: 11%;
-    left: 16%;
+    bottom: 13%;
+    left: 19%;
     font-weight: 300;
 }
 
 .citizen-id {
     position: absolute;
     font-family: 'Oswald', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: white;
-    bottom: 8%;
-    left: 16%;
+    bottom: 10%;
+    left: 19%;
     font-weight: 300;
 }
 
