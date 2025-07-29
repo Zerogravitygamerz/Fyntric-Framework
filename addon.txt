@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+    "name"              "NoPixel Inventory System"
+    "version"           "1.0"
+    "up_date"           "29/07/2025"
+    "author_name"       "Fyntric Framework"
+    "author_email"      ""
+    "author_url"        ""
+    "info"              "A realistic NoPixel-style inventory system with character model and equipment slots"
+    "override"          "0"
+}
