@@ -28,19 +28,22 @@ class InventorySystem {
         }
 
         const playerGrid = document.getElementById('player-inventory');
-        for (let i = 0; i < 30; i++) {
+        playerGrid.style.gridTemplateColumns = 'repeat(5, 1fr)';
+        for (let i = 0; i < 15; i++) {
             const slot = this.createInventorySlot('player', i);
             playerGrid.appendChild(slot);
         }
 
         const backpackGrid = document.getElementById('backpack-inventory');
+        backpackGrid.style.gridTemplateColumns = 'repeat(5, 1fr)';
         for (let i = 0; i < 30; i++) {
             const slot = this.createInventorySlot('backpack', i);
             backpackGrid.appendChild(slot);
         }
 
         const otherGrid = document.getElementById('other-inventory');
-        for (let i = 0; i < 40; i++) {
+        otherGrid.style.gridTemplateColumns = 'repeat(5, 1fr)';
+        for (let i = 0; i < 15; i++) {
             const slot = this.createInventorySlot('other', i);
             otherGrid.appendChild(slot);
         }
