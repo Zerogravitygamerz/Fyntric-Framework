@@ -17,7 +17,6 @@ function INVENTORY:CreatePanel()
     self.Panel:SetKeyboardInputEnabled(false)
     self.Panel:SetMouseInputEnabled(true)
     self.Panel:SetPaintBackground(false)
-    self.Panel:ShowCloseButton(false)
     
     local htmlPanel = vgui.Create("DHTML", self.Panel)
     htmlPanel:SetSize(ScrW(), ScrH())
