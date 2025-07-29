@@ -16,9 +16,12 @@ function INVENTORY:CreatePanel()
     self.Panel:MakePopup()
     self.Panel:SetKeyboardInputEnabled(false)
     self.Panel:SetMouseInputEnabled(true)
+    self.Panel:SetPaintBackground(false)
+    self.Panel:ShowCloseButton(false)
     
     local htmlPanel = vgui.Create("DHTML", self.Panel)
-    htmlPanel:Dock(FILL)
+    htmlPanel:SetSize(ScrW(), ScrH())
+    htmlPanel:SetPos(0, 0)
     
     local htmlContent = self:GetInventoryHTML()
     htmlPanel:SetHTML(htmlContent)

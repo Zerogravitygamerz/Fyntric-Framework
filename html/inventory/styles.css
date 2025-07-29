@@ -24,6 +24,8 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    border: none;
+    outline: none;
 }
 
 #qbcore-inventory {
@@ -36,6 +38,10 @@ body {
     user-select: none;
     background: var(--color-primary-inventory-bg);
     z-index: 1000;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
 }
 
 .inv-container {
@@ -44,6 +50,10 @@ body {
     height: 100vh;
     top: 0;
     left: 0;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
 }
 
 /* Left Sidebar */
