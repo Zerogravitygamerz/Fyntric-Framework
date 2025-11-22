@@ -1,0 +1,532 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GAR Holotablet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Roboto+Mono:wght@300;400&display=swap');
+        :root {
+            --bg: #0a0d12;
+            --panel: #131926;
+            --accent: #3af2ff;
+            --accent2: #ffdd57;
+            --danger: #ff6b6b;
+            --success: #6bffae;
+            --muted: #7082a0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 20% 20%, #112233, #06070c 60%);
+            font-family: 'Oswald', sans-serif;
+            color: #e1ecff;
+            overflow: hidden;
+        }
+        header {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(58, 242, 255, 0.12), rgba(255, 221, 87, 0.1));
+            border-bottom: 1px solid rgba(58, 242, 255, 0.2);
+        }
+        h1 {
+            margin: 0;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .subtext { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .grid { display: grid; grid-template-columns: 240px 1fr; height: calc(100vh - 60px); }
+        nav { background: #0d121d; border-right: 1px solid rgba(58, 242, 255, 0.12); padding: 10px; overflow-y: auto; }
+        nav button {
+            width: 100%;
+            margin-bottom: 6px;
+            padding: 12px;
+            background: var(--panel);
+            color: #e1ecff;
+            border: 1px solid rgba(58, 242, 255, 0.2);
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        nav button.active, nav button:hover { background: rgba(58, 242, 255, 0.12); border-color: rgba(58, 242, 255, 0.4); }
+        main { padding: 12px 16px; overflow-y: auto; }
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(58, 242, 255, 0.12);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+        }
+        .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+        label { text-transform: uppercase; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+        input, textarea, select {
+            width: 100%;
+            background: #0c1320;
+            border: 1px solid rgba(58, 242, 255, 0.2);
+            color: #e1ecff;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 11px; margin-right: 6px; }
+        .pill.green { background: rgba(107, 255, 174, 0.12); color: #9bf5c6; border: 1px solid rgba(107, 255, 174, 0.5); }
+        .pill.red { background: rgba(255, 107, 107, 0.12); color: #f5a2a2; border: 1px solid rgba(255, 107, 107, 0.4); }
+        .timeline { border-left: 2px dashed rgba(58, 242, 255, 0.35); padding-left: 12px; }
+        .timeline .card { margin-left: 6px; }
+        .topline { display: flex; justify-content: space-between; align-items: center; }
+        .holofeed { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+        .minigames { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+        .progress { width: 100%; background: #0b101a; height: 12px; border-radius: 999px; overflow: hidden; border: 1px solid rgba(58, 242, 255, 0.25); }
+        .progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+        .button-row { display: flex; gap: 8px; }
+        .btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(58, 242, 255, 0.3);
+            background: rgba(58, 242, 255, 0.12);
+            color: #e1ecff;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .btn.secondary { background: rgba(255, 221, 87, 0.12); border-color: rgba(255, 221, 87, 0.4); color: #ffe58a; }
+        .btn.danger { background: rgba(255, 107, 107, 0.12); border-color: rgba(255, 107, 107, 0.4); color: #ffc1c1; }
+        .status-bar { display: flex; gap: 10px; align-items: center; }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>GAR Holotablet</h1>
+        <div class="subtext">Clone High Command | Encryption Key: CT-7577</div>
+    </div>
+    <div class="status-bar">
+        <div class="pill green" id="syncState">Synced</div>
+        <div class="pill" style="background: rgba(255,221,87,0.12); border:1px solid rgba(255,221,87,0.3); color:#ffe58a;">Version 1.0</div>
+    </div>
+</header>
+<div class="grid">
+    <nav id="nav"></nav>
+    <main id="content"></main>
+</div>
+<script>
+const tabs = [
+    { id: 'reports', label: 'Field Reports' },
+    { id: 'messages', label: 'Encrypted Messages' },
+    { id: 'contacts', label: 'Contacts' },
+    { id: 'regiments', label: 'Regiment Control' },
+    { id: 'announcements', label: 'Holo Announcements' },
+    { id: 'holofeed', label: 'HoloNet Feed' },
+    { id: 'minigames', label: 'Training Sims' },
+];
+
+let state = {};
+let activeTab = 'reports';
+
+function post(action, payload) {
+    if (window.tablet && window.tablet.send) {
+        window.tablet.send(action, JSON.stringify(payload || {}));
+        document.getElementById('syncState').textContent = 'Dispatching';
+    }
+}
+
+function applyData(data) {
+    state = data;
+    document.getElementById('syncState').textContent = 'Synced';
+    render();
+}
+
+function renderNav() {
+    const nav = document.getElementById('nav');
+    nav.innerHTML = '';
+    tabs.forEach(tab => {
+        const btn = document.createElement('button');
+        btn.textContent = tab.label;
+        if (tab.id === activeTab) btn.classList.add('active');
+        btn.onclick = () => { activeTab = tab.id; render(); };
+        nav.appendChild(btn);
+    });
+}
+
+function renderContent() {
+    const pane = document.getElementById('content');
+    pane.innerHTML = '';
+    if (activeTab === 'reports') return pane.appendChild(renderReports());
+    if (activeTab === 'messages') return pane.appendChild(renderMessages());
+    if (activeTab === 'contacts') return pane.appendChild(renderContacts());
+    if (activeTab === 'regiments') return pane.appendChild(renderRegiments());
+    if (activeTab === 'announcements') return pane.appendChild(renderAnnouncements());
+    if (activeTab === 'holofeed') return pane.appendChild(renderHolofeed());
+    if (activeTab === 'minigames') return pane.appendChild(renderMinigames());
+}
+
+function renderReports() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Log Recon & Incident Reports</h2><span class="subtext">Send to command, archive for later</span></div>
+        <div class="row">
+            <div><label>Title</label><input id="r-title"></div>
+            <div><label>Location</label><input id="r-location" placeholder="Venator / Planet / Deck" /></div>
+            <div><label>Tags (comma separated)</label><input id="r-tags" placeholder="siege, stealth, medical" /></div>
+        </div>
+        <label>Body</label>
+        <textarea id="r-body" placeholder="Detail troop movements, injuries, intel..." ></textarea>
+        <div class="button-row" style="margin-top:8px;">
+            <button class="btn" id="r-submit">Transmit to Archive</button>
+        </div>
+    `;
+    form.querySelector('#r-submit').onclick = () => {
+        post('report', {
+            title: form.querySelector('#r-title').value,
+            location: form.querySelector('#r-location').value,
+            tags: form.querySelector('#r-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+            body: form.querySelector('#r-body').value
+        });
+    };
+    wrap.appendChild(form);
+
+    const timeline = document.createElement('div');
+    timeline.className = 'timeline';
+    (state.reports || []).forEach(rep => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="topline"><strong>${rep.title}</strong><span class="subtext">${new Date(rep.timestamp*1000).toLocaleString()}</span></div>
+            <div class="subtext">${rep.location} | Author: ${rep.author}</div>
+            <div style="margin:8px 0;">${rep.body}</div>
+            <div>${(rep.tags||[]).map(t=>`<span class="pill">${t}</span>`).join('')}</div>
+        `;
+        timeline.appendChild(card);
+    });
+    wrap.appendChild(timeline);
+    return wrap;
+}
+
+function renderMessages() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Encrypted Burst</h2><span class="subtext">Route through secure Holonet</span></div>
+        <div class="row">
+            <div><label>To (ID or Call-sign)</label><input id="m-to"></div>
+            <div><label>Channel</label><input id="m-channel" value="Encrypted"></div>
+        </div>
+        <label>Payload</label><textarea id="m-body" placeholder="Short-burst message"></textarea>
+        <div class="button-row"><button class="btn" id="m-send">Send</button></div>
+    `;
+    form.querySelector('#m-send').onclick = () => {
+        post('message', {
+            to: form.querySelector('#m-to').value,
+            channel: form.querySelector('#m-channel').value,
+            body: form.querySelector('#m-body').value
+        });
+    };
+    wrap.appendChild(form);
+
+    (state.messages || []).forEach(msg => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="topline"><strong>${msg.channel}</strong><span class="subtext">${new Date(msg.timestamp*1000).toLocaleTimeString()}</span></div>
+            <div class="subtext">From ${msg.from} → ${msg.to}</div>
+            <div style="margin-top:6px;">${msg.body}</div>
+        `;
+        wrap.appendChild(card);
+    });
+    return wrap;
+}
+
+function renderContacts() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Field Directory</h2><span class="subtext">Quick dial & frequency locks</span></div>
+        <div class="row">
+            <div><label>Name</label><input id="c-name"></div>
+            <div><label>Regiment</label><input id="c-reg"></div>
+            <div><label>Frequency</label><input id="c-freq" placeholder="321.00" /></div>
+        </div>
+        <label>Notes</label><textarea id="c-notes" placeholder="Equipment, specialties, quirks"></textarea>
+        <div class="button-row"><button class="btn" id="c-add">Save Contact</button></div>
+    `;
+    form.querySelector('#c-add').onclick = () => {
+        post('contact', {
+            name: form.querySelector('#c-name').value,
+            regiment: form.querySelector('#c-reg').value,
+            frequency: form.querySelector('#c-freq').value,
+            notes: form.querySelector('#c-notes').value
+        });
+    };
+    wrap.appendChild(form);
+
+    const list = document.createElement('div');
+    const userContacts = Object.values(state.contacts || {}).flat();
+    userContacts.forEach(ct => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="topline"><strong>${ct.name}</strong><span class="subtext">${ct.regiment}</span></div>
+            <div class="subtext">Freq: ${ct.frequency}</div>
+            <div style="margin-top:6px;">${ct.notes}</div>
+        `;
+        list.appendChild(card);
+    });
+    wrap.appendChild(list);
+    return wrap;
+}
+
+function renderRegiments() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Regiment Dashboard</h2><span class="subtext">Roster, alert level, supply routing</span></div>
+        <div class="row">
+            <div><label>Name</label><input id="g-name"></div>
+            <div><label>Lead</label><input id="g-lead"></div>
+            <div><label>Color</label><input id="g-color" value="#3d8be3"></div>
+            <div><label>Alert</label>
+                <select id="g-alert">
+                    <option>green</option>
+                    <option>yellow</option>
+                    <option>red</option>
+                </select>
+            </div>
+        </div>
+        <label>Duties (comma separated)</label><input id="g-duties" placeholder="boarding, recon, medical">
+        <label>Roster (comma separated)</label><input id="g-roster" placeholder="CT-5597, CT-8001">
+        <label>Comms Channels (comma separated)</label><input id="g-channels" placeholder="Command, Logistics">
+        <div class="button-row" style="margin-top:8px;"><button class="btn" id="g-save">Save Regiment</button></div>
+    `;
+    form.querySelector('#g-save').onclick = () => {
+        post('regiment', {
+            name: form.querySelector('#g-name').value,
+            lead: form.querySelector('#g-lead').value,
+            color: form.querySelector('#g-color').value,
+            alert: form.querySelector('#g-alert').value,
+            duties: form.querySelector('#g-duties').value.split(',').map(x=>x.trim()).filter(Boolean),
+            roster: form.querySelector('#g-roster').value.split(',').map(x=>x.trim()).filter(Boolean),
+            channels: form.querySelector('#g-channels').value.split(',').map(x=>x.trim()).filter(Boolean),
+        });
+    };
+    wrap.appendChild(form);
+
+    const entries = Object.values(state.regiments || {});
+    entries.forEach(reg => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.borderColor = reg.color || '#3af2ff';
+        card.innerHTML = `
+            <div class="topline"><strong>${reg.name}</strong><span class="pill ${reg.alert==='red'?'red':'green'}">${reg.alert}</span></div>
+            <div class="subtext">Lead: ${reg.lead} | Channels: ${(reg.channels||[]).join(', ')}</div>
+            <div style="margin-top:6px;">Duties: ${(reg.duties||[]).join(', ')}</div>
+            <div class="progress" style="margin-top:8px;"><span style="width:${Math.min(100, (reg.roster||[]).length * 10)}%"></span></div>
+            <div class="subtext" style="margin-top:6px;">Roster: ${(reg.roster||[]).join(', ')}</div>
+        `;
+        wrap.appendChild(card);
+    });
+    return wrap;
+}
+
+function renderAnnouncements() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Shipwide Announcement</h2><span class="subtext">Broadcast to all troopers</span></div>
+        <label>Priority</label>
+        <select id="a-priority">
+            <option value="standard">Standard</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+        </select>
+        <label>Duration (seconds)</label><input id="a-duration" type="number" value="600">
+        <label>Message</label><textarea id="a-body" placeholder="All hands to battle stations..." ></textarea>
+        <div class="button-row"><button class="btn secondary" id="a-send">Broadcast</button></div>
+    `;
+    form.querySelector('#a-send').onclick = () => {
+        post('announcement', {
+            priority: form.querySelector('#a-priority').value,
+            duration: form.querySelector('#a-duration').value,
+            body: form.querySelector('#a-body').value
+        });
+    };
+    wrap.appendChild(form);
+
+    (state.announcements || []).forEach(a => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="topline"><strong>${a.priority.toUpperCase()}</strong><span class="subtext">${new Date(a.timestamp*1000).toLocaleString()}</span></div>
+            <div class="subtext">Author: ${a.author}</div>
+            <div style="margin-top:6px;">${a.body}</div>
+        `;
+        wrap.appendChild(card);
+    });
+    return wrap;
+}
+
+function renderHolofeed() {
+    const wrap = document.createElement('div');
+    const form = document.createElement('div');
+    form.className = 'card';
+    form.innerHTML = `
+        <div class="topline"><h2>Holonet Burst (Space Twitter)</h2><span class="subtext">Keep morale up, share intel</span></div>
+        <div class="row">
+            <div><label>Handle</label><input id="h-handle" value="@ct" /></div>
+            <div><label>Hashtags</label><input id="h-tags" placeholder="#Order66, #Victory" /></div>
+        </div>
+        <label>Status</label><textarea id="h-body" placeholder="Boast, report, meme"></textarea>
+        <div class="button-row"><button class="btn" id="h-send">Post to HoloNet</button></div>
+    `;
+    form.querySelector('#h-send').onclick = () => {
+        post('holofeed', {
+            handle: form.querySelector('#h-handle').value,
+            hashtags: form.querySelector('#h-tags').value.split(/[,#]/).map(x=>x.trim()).filter(Boolean),
+            body: form.querySelector('#h-body').value,
+            likes: Math.floor(Math.random()*200)
+        });
+    };
+    wrap.appendChild(form);
+
+    const grid = document.createElement('div');
+    grid.className = 'holofeed';
+    (state.holofeed || []).forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="topline"><strong>${entry.handle}</strong><span class="subtext">${new Date(entry.timestamp*1000).toLocaleTimeString()}</span></div>
+            <div style="margin:6px 0;">${entry.body}</div>
+            <div class="subtext">Likes: ${entry.likes} ${(entry.hashtags||[]).map(h=>`#${h}`).join(' ')}</div>
+        `;
+        grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+    return wrap;
+}
+
+function renderMinigames() {
+    const wrap = document.createElement('div');
+    const grid = document.createElement('div');
+    grid.className = 'minigames';
+
+    // Hyperdrive tuning: slider must hit target band
+    const hyper = document.createElement('div');
+    hyper.className = 'card';
+    hyper.innerHTML = `
+        <div class="topline"><h2>Hyperdrive Tuning</h2><span class="subtext">Stop the jitter inside the green band</span></div>
+        <div id="hd-meter" style="height:12px;background:#0b101a;border:1px solid rgba(58,242,255,0.25);border-radius:999px;position:relative;">
+            <div id="hd-target" style="position:absolute;left:40%;width:20%;height:100%;background:rgba(107,255,174,0.3);"></div>
+            <div id="hd-pointer" style="position:absolute;left:0;height:100%;width:6px;background:var(--accent);"></div>
+        </div>
+        <div class="button-row" style="margin-top:8px;"><button class="btn" id="hd-start">Start Pulse</button></div>
+        <div class="subtext" id="hd-readout">Awaiting calibration</div>
+    `;
+    let hdInterval;
+    hyper.querySelector('#hd-start').onclick = () => {
+        const pointer = hyper.querySelector('#hd-pointer');
+        const target = hyper.querySelector('#hd-target');
+        let pos = 0;
+        clearInterval(hdInterval);
+        hdInterval = setInterval(()=>{
+            pos = (pos + Math.random()*12) % 100;
+            pointer.style.left = pos + '%';
+        }, 120);
+        setTimeout(()=>{
+            clearInterval(hdInterval);
+            const bandStart = parseFloat(target.style.left);
+            const bandEnd = bandStart + parseFloat(target.style.width);
+            const success = pos >= bandStart && pos <= bandEnd;
+            hyper.querySelector('#hd-readout').textContent = success ? 'Lock achieved!' : 'Misjump risk — try again';
+            post('minigame', { name: 'hyperdrive', score: success ? 100 : 10 });
+        }, 2000);
+    };
+    grid.appendChild(hyper);
+
+    // Sabacc memory pairs
+    const sabacc = document.createElement('div');
+    sabacc.className = 'card';
+    sabacc.innerHTML = `
+        <div class="topline"><h2>Holo-Sabacc Memory</h2><span class="subtext">Match clone insignias fast</span></div>
+        <div id="sab-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;"></div>
+        <div class="button-row" style="margin-top:8px;"><button class="btn" id="sab-start">Shuffle</button></div>
+        <div class="subtext" id="sab-readout">Deck cold</div>
+    `;
+    const symbols = ['⚔️','🚀','🛰️','🛡️','🌌','🎯','🦾','🧭'];
+    let revealed = [];
+    let matched = 0;
+
+    function drawCards() {
+        const board = sabacc.querySelector('#sab-grid');
+        board.innerHTML = '';
+        const doubled = [...symbols, ...symbols].sort(()=>Math.random()-0.5);
+        doubled.forEach(sym => {
+            const cell = document.createElement('button');
+            cell.className = 'btn';
+            cell.style.height = '60px';
+            cell.textContent = '❔';
+            cell.dataset.sym = sym;
+            cell.onclick = () => flip(cell);
+            board.appendChild(cell);
+        });
+    }
+
+    function flip(cell) {
+        if (cell.disabled || revealed.length === 2) return;
+        cell.textContent = cell.dataset.sym;
+        cell.disabled = true;
+        revealed.push(cell);
+        if (revealed.length === 2) {
+            setTimeout(()=>{
+                const [a,b] = revealed;
+                if (a.dataset.sym === b.dataset.sym) {
+                    matched += 1;
+                    sabacc.querySelector('#sab-readout').textContent = `Pairs locked: ${matched}`;
+                    if (matched === symbols.length) {
+                        sabacc.querySelector('#sab-readout').textContent = 'Deck cleared!';
+                        post('minigame', { name: 'sabacc', score: 200 });
+                    }
+                } else {
+                    a.textContent = '❔'; a.disabled = false;
+                    b.textContent = '❔'; b.disabled = false;
+                }
+                revealed = [];
+            }, 350);
+        }
+    }
+
+    sabacc.querySelector('#sab-start').onclick = () => {
+        matched = 0; revealed = [];
+        sabacc.querySelector('#sab-readout').textContent = 'New deck';
+        drawCards();
+    };
+    drawCards();
+    grid.appendChild(sabacc);
+
+    wrap.appendChild(grid);
+    return wrap;
+}
+
+function render() {
+    renderNav();
+    renderContent();
+}
+
+window.applyData = applyData;
+window.addEventListener('DOMContentLoaded', () => {
+    render();
+    if (window.tablet && window.tablet.ready) window.tablet.ready();
+});
+</script>
+</body>
+</html>
