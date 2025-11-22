@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Wars Tactical Datapad</title>
+<style>
+
+/* condensed CSS (see earlier) */
+:root { --bg:#070a12; --panel:#0f1624; --accent:#38bdf8; --accent-2:#00f6ff; --accent-3:#6ee7ff; --danger:#ff4d6d; --success:#00f59d; --warning:#ffcc00; --text:#e5f4ff; --muted:#8aa3bf; --holo-border:rgba(99,255,255,0.35); --grid:rgba(56,189,248,0.06); --card:rgba(15,22,36,0.7); --card-strong:rgba(15,22,36,0.9); --glass:rgba(255,255,255,0.03); --blur:blur(24px); --font:'Orbitron','Rajdhani','Segoe UI',sans-serif; }
+*{box-sizing:border-box;font-family:var(--font);letter-spacing:0.02em;}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 10%,rgba(56,189,248,0.08),transparent 20%),radial-gradient(circle at 80% 30%,rgba(0,245,157,0.06),transparent 26%),radial-gradient(circle at 30% 70%,rgba(255,77,109,0.05),transparent 24%),var(--bg);color:var(--text);overflow-x:hidden;}
+.matrix-grid{position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:70px 70px;pointer-events:none;mix-blend-mode:screen;opacity:0.35;animation:drift 40s linear infinite;z-index:0;}
+@keyframes drift{0%{transform:translate3d(0,0,0);}50%{transform:translate3d(10px,-12px,0);}100%{transform:translate3d(0,0,0);}}
+header{position:sticky;top:0;z-index:10;padding:16px 24px;background:linear-gradient(180deg,rgba(7,10,18,0.9) 0%,rgba(7,10,18,0.5) 100%);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--holo-border);box-shadow:0 8px 30px rgba(0,0,0,0.45);} 
+.brand{display:flex;align-items:center;gap:12px;} .brand-icon{width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);background:radial-gradient(circle,rgba(56,189,248,0.25),rgba(7,10,18,0.9));display:grid;place-items:center;box-shadow:0 0 22px rgba(0,255,255,0.25);} 
+.brand-title{font-size:20px;text-transform:uppercase;color:var(--accent);text-shadow:0 0 16px rgba(56,189,248,0.8);letter-spacing:0.08em;}
+.meta{display:flex;gap:18px;align-items:center;color:var(--muted);font-size:13px;}
+.holo-button{padding:10px 14px;border:1px solid var(--holo-border);color:var(--accent-3);background:linear-gradient(120deg,rgba(56,189,248,0.12),rgba(0,245,157,0.12));border-radius:10px;text-transform:uppercase;font-size:12px;letter-spacing:0.08em;cursor:pointer;box-shadow:0 0 12px rgba(0,255,255,0.25);transition:0.2s ease;}
+.holo-button:hover{box-shadow:0 0 18px rgba(0,245,157,0.35);transform:translateY(-2px);border-color:var(--accent-3);} 
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 80px);position:relative;z-index:1;} 
+nav{border-right:1px solid var(--holo-border);background:linear-gradient(180deg,rgba(15,22,36,0.9),rgba(7,10,18,0.8));padding:20px 12px;backdrop-filter:var(--blur);} 
+.nav-section{margin-bottom:18px;} .nav-title{font-size:13px;text-transform:uppercase;color:var(--muted);padding:0 12px;letter-spacing:0.12em;margin-bottom:8px;} 
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:6px;border-radius:12px;color:var(--text);cursor:pointer;transition:0.2s ease;border:1px solid transparent;background:transparent;position:relative;overflow:hidden;} 
+.nav-item::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(56,189,248,0.08),rgba(0,245,157,0.08));opacity:0;transition:0.25s ease;pointer-events:none;} 
+.nav-item.active,.nav-item:hover{border-color:var(--holo-border);box-shadow:inset 0 0 0 1px rgba(56,189,248,0.12);transform:translateX(4px);} 
+.nav-item.active::after,.nav-item:hover::after{opacity:1;} 
+.nav-icon{width:36px;height:36px;border-radius:10px;background:rgba(56,189,248,0.15);display:grid;place-items:center;border:1px solid rgba(56,189,248,0.2);box-shadow:0 0 14px rgba(56,189,248,0.25) inset;font-size:15px;} 
+.nav-label{flex:1;font-weight:600;} .nav-pill{padding:4px 8px;border-radius:999px;font-size:11px;background:rgba(0,245,157,0.16);color:var(--success);border:1px solid rgba(0,245,157,0.3);} 
+.workspace{padding:18px 22px 32px 22px;position:relative;overflow:hidden;}
+/* ...many more styles continue below ... */
+
+</style>
+</head>
+<body>
+<div class="matrix-grid"></div>
+<div class="floating-orbs"><div class="orb" style="left:10%;top:18%;"></div><div class="orb" style="top:60%;"></div><div class="orb" style="top:30%;"></div></div>
+<header><div class="brand"><div class="brand-icon">✦</div><div><div class="brand-title">Imperial/Republic Datapad</div><div class="meta">Galactic Tactical Operations Mesh</div></div></div><div class="meta"><div class="badge">Sector: Outer Rim</div><div class="badge">Encryption: Quantum Lattice</div><button class="holo-button" onclick="openModal('quick-actions')">Quick Actions</button></div></header>
+
+<div class="layout">
+  <nav>
+    <div class="nav-section">
+      <div class="nav-title">Navigation</div>
+      <div class="nav-item active" onclick="switchPanel('overview')"><div class="nav-icon">🏠</div><div class="nav-label">Command Overview</div><div class="nav-pill">Live</div></div>
+      <div class="nav-item" onclick="switchPanel('reports')"><div class="nav-icon">📝</div><div class="nav-label">Incident Reports</div><div class="nav-pill">+3</div></div>
+      <div class="nav-item" onclick="switchPanel('messaging')"><div class="nav-icon">📡</div><div class="nav-label">Comms & Contacts</div></div>
+      <div class="nav-item" onclick="switchPanel('regiments')"><div class="nav-icon">🪖</div><div class="nav-label">Regiment Mgmt</div></div>
+      <div class="nav-item" onclick="switchPanel('holonet')"><div class="nav-icon">🛰️</div><div class="nav-label">HoloNet Feed</div></div>
+      <div class="nav-item" onclick="switchPanel('minigames')"><div class="nav-icon">🎮</div><div class="nav-label">Starfighter Minigames</div></div>
+      <div class="nav-item" onclick="switchPanel('announcements')"><div class="nav-icon">📢</div><div class="nav-label">Announcements</div></div>
+      <div class="nav-item" onclick="switchPanel('analytics')"><div class="nav-icon">📊</div><div class="nav-label">Telemetry & Logs</div></div>
+    </div>
+  </nav>
+  <main class="workspace">
+    <section class="panel" id="overview-panel">
+      <div class="holo-card">
+        <div class="pulse"></div>
+        <div class="title-row"><h2>Command Situation</h2><div class="flex"><span class="badge">Hypersync</span><button class="holo-button" onclick="simulateSync()">Sync Now</button></div></div>
+        <div class="card-grid">
+          <div class="stat"><div class="stat-label">Active Units</div><div class="stat-value" id="active-units">128</div><div class="muted">Includes Infantry, Armor, SpecOps, Pilots.</div></div>
+          <div class="stat"><div class="stat-label">Readiness</div><div class="stat-value" id="readiness">92%</div><div class="muted">Calculated from duty rosters, ammo, morale.</div></div>
+          <div class="stat"><div class="stat-label">Fleet Uptime</div><div class="stat-value" id="uptime">99.4%</div><div class="muted">Maintenance cycles and hyperdrive calibrations.</div></div>
+          <div class="stat"><div class="stat-label">HoloMail Queue</div><div class="stat-value" id="mail">47</div><div class="muted">Awaiting triage by comms officers.</div></div>
+        </div>
+        <div class="systems">
+          <div class="system"><div class="system-label">Planetary Shield</div><div class="system-value">92% • Stable</div><div class="progress"><div class="progress-bar" style="width:92%"></div></div></div>
+          <div class="system"><div class="system-label">Ion Cannon Grid</div><div class="system-value">78% • Cycling</div><div class="progress"><div class="progress-bar" style="width:78%"></div></div></div>
+          <div class="system"><div class="system-label">Comms Relays</div><div class="system-value">99% • Secured</div><div class="progress"><div class="progress-bar" style="width:99%"></div></div></div>
+          <div class="system"><div class="system-label">Supply Corridors</div><div class="system-value">88% • Flowing</div><div class="progress"><div class="progress-bar" style="width:88%"></div></div></div>
+        </div>
+      </div>
+      <div class="card-grid">
+        <div class="holo-card">
+          <div class="title-row"><h2>Live Alerts</h2><button class="holo-button" onclick="generateAlert()">Inject Alert</button></div>
+          <div class="logs" id="alert-log"></div>
+        </div>
+        <div class="holo-card">
+          <div class="title-row"><h2>Timeline</h2><span class="muted">Sorted by priority</span></div>
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" id="reports-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>File an Incident Report</h2><div class="flex"><span class="badge">Encrypted</span><button class="holo-button" onclick="saveReport()">Save Draft</button></div></div>
+        <div class="two-col">
+          <div><label class="muted">Incident Title</label><input class="input" id="report-title" placeholder="e.g. Skirmish at Docking Bay 94"></div>
+          <div><label class="muted">Regiment</label><select id="report-regiment" class="input"></select></div>
+          <div><label class="muted">Location</label><input class="input" id="report-location" placeholder="Mos Eisley, Tatooine"></div>
+          <div><label class="muted">Severity</label><select id="report-severity" class="input"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></div>
+        </div>
+        <div class="divider"></div>
+        <label class="muted">Summary</label>
+        <textarea id="report-summary" placeholder="Detail troop movements, casualties, objectives..."></textarea>
+        <div class="divider"></div>
+        <div class="two-col">
+          <div><label class="muted">Attachments (fictional)</label><input class="input" placeholder="Link to helmet cam, probe droid feed..."></div>
+          <div><label class="muted">Notify</label><input class="input" placeholder="Tag officers to notify upon submission"></div>
+        </div>
+        <div class="toolbar">
+          <button onclick="submitReport()">Submit to High Command</button>
+          <button onclick="openModal('templates')">Load Template</button>
+          <button onclick="injectReportLore()">Auto-fill Narrative</button>
+        </div>
+      </div>
+      <div class="holo-card">
+        <div class="title-row"><h2>Report Archive</h2><span class="muted">Searchable, filterable, exportable</span></div>
+        <div class="two-col">
+          <input class="input" id="report-search" placeholder="Search by title, author, regiment..." oninput="filterReports()">
+          <select class="input" id="report-filter" onchange="filterReports()"><option value="all">All Severities</option><option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Critical">Critical</option></select>
+        </div>
+        <div class="divider"></div>
+        <div class="list" id="report-list"></div>
+      </div>
+    </section>
+
+
+    <section class="panel" id="messaging-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>Encrypted Messaging</h2><div class="flex"><span class="badge">Quantum Salted</span><button class="holo-button" onclick="simulateMessage()">Inject Message</button></div></div>
+        <div class="two-col">
+          <div><label class="muted">Recipient</label><select id="message-recipient" class="input"></select></div>
+          <div><label class="muted">Channel</label><select id="message-channel" class="input"><option>Direct</option><option>Squad Broadcast</option><option>Regiment Bulletin</option><option>Fleet Wide</option></select></div>
+        </div>
+        <label class="muted">Message</label>
+        <textarea id="message-body" placeholder="Compose encrypted datapacket..."></textarea>
+        <div class="toolbar">
+          <button onclick="sendMessage()">Send</button>
+          <button onclick="openModal('contacts')">Manage Contacts</button>
+          <button onclick="openModal('hololog')">Open Message Log</button>
+        </div>
+      </div>
+      <div class="card-grid">
+        <div class="holo-card">
+          <div class="title-row"><h2>Contacts</h2><button class="holo-button" onclick="openModal('contacts')">Add Contact</button></div>
+          <div class="list" id="contact-list"></div>
+        </div>
+        <div class="holo-card">
+          <div class="title-row"><h2>Live Comms</h2><span class="muted">Quantum entangled channels</span></div>
+          <div class="logs" id="message-log"></div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" id="regiments-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>Regiment Command</h2><button class="holo-button" onclick="addRegiment()">Create Regiment</button></div>
+        <div class="grid-3" id="regiment-grid"></div>
+      </div>
+      <div class="holo-card">
+        <div class="title-row"><h2>Roster</h2><span class="muted">Assign billets, promotions, duties</span></div>
+        <table class="table" id="roster-table"><thead><tr><th>Name</th><th>Regiment</th><th>Role</th><th>Status</th><th>Loadout</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+    <section class="panel" id="holonet-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>HoloNet Stream</h2><button class="holo-button" onclick="postHolonet()">Broadcast</button></div>
+        <div class="holonet">
+          <div><div id="holonet-feed"></div></div>
+          <div>
+            <div class="announcement"><small>Trending Channel</small><h3>Outer Rim Dispatch</h3><p>Live coverage of the skirmish near the Dune Sea, sandstorms interfering with walker optics. Expect intermittent comms.</p></div>
+            <div class="divider"></div>
+            <div class="status-grid">
+              <div class="status-panel"><div class="status-title">Holonet Status</div><p class="status-value">Operational</p><div class="muted">Quantum relays stable</div></div>
+              <div class="status-panel"><div class="status-title">Engagement Ratio</div><p class="status-value">218k</p><div class="muted">Views, boosts, relays</div></div>
+              <div class="status-panel"><div class="status-title">Hashtag Density</div><p class="status-value">#LongLiveTheEmpire</p><div class="muted">Holo trending phrase</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="panel" id="minigames-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>Starfighter Minigames</h2><button class="holo-button" onclick="launchMiniGame()">Launch Random</button></div>
+        <div class="game-grid" id="game-grid"></div>
+      </div>
+    </section>
+    <section class="panel" id="announcements-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>Announcements</h2><button class="holo-button" onclick="openModal('announce')">Create Announcement</button></div>
+        <div class="list" id="announcement-list"></div>
+      </div>
+    </section>
+    <section class="panel" id="analytics-panel" style="display:none;">
+      <div class="holo-card">
+        <div class="title-row"><h2>Telemetry & Logs</h2><button class="holo-button" onclick="simulateTelemetry()">Simulate Packet</button></div>
+        <div class="two-col"><div class="chart"><div class="chart-line"></div><div class="chart-pulse"></div></div><div><div class="mini-log" id="telemetry-log"></div></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+<div class="modal" id="quick-actions-modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('quick-actions')">✕</button><h3>Quick Actions</h3><div class="holo-keys"><div class="holo-key" onclick="simulateSync()">Fleet Sync</div><div class="holo-key" onclick="openModal('templates')">Load Report Template</div><div class="holo-key" onclick="generateAlert()">Generate Alert</div><div class="holo-key" onclick="simulateMessage()">Ping Commander</div><div class="holo-key" onclick="launchMiniGame()">Launch Game</div><div class="holo-key" onclick="simulateTelemetry()">Telemetry Pulse</div></div><div class="floating-hints"><div class="hint">Use HoloNet feed as in-universe Twitter clone with boosts, relays, encrypted DMs.</div><div class="hint">Regiment management supports squads, schedules, loadouts, morale, and chain-of-command overrides.</div><div class="hint">Minigames are diegetic training simulations: trench run, astromech hacking, beskad duels.</div></div></div></div>
+<div class="modal" id="templates-modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('templates')">✕</button><h3>Report Templates</h3><div class="list" id="template-list"></div></div></div>
+<div class="modal" id="contacts-modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('contacts')">✕</button><h3>Contact Manager</h3><div class="two-col"><input class="input" id="contact-name" placeholder="Name / Callsign"><input class="input" id="contact-role" placeholder="Role / Regiment"></div><div class="toolbar"><button onclick="addContact()">Add Contact</button><button onclick="seedContacts()">Seed Random</button></div><div class="list" id="contact-modal-list"></div></div></div>
+<div class="modal" id="hololog-modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('hololog')">✕</button><h3>Message Log</h3><div class="logs" id="full-message-log"></div></div></div>
+<div class="modal" id="announce-modal"><div class="modal-content"><button class="modal-close" onclick="closeModal('announce')">✕</button><h3>Create Announcement</h3><input class="input" id="announce-title" placeholder="Title"><textarea id="announce-body" placeholder="Broadcast to all regiments..."></textarea><div class="toolbar"><button onclick="createAnnouncement()">Broadcast</button></div></div></div>
+
+
+<script>
+const regiments=[{name:'501st Legion',color:'#4dd0ff',doctrine:'Shock Troopers',morale:92,readiness:95},{name:'104th Wolfpack',color:'#b3ffea',doctrine:'Recon & Support',morale:88,readiness:89},{name:'Coruscant Guard',color:'#ff7d9d',doctrine:'Military Police',morale:90,readiness:91},{name:'212th Attack Battalion',color:'#ffd166',doctrine:'Airborne Infantry',morale:86,readiness:87},{name:'First Order SpecOps',color:'#9ae6b4',doctrine:'Covert Ops',morale:93,readiness:94},{name:'Mandalorian Cohort',color:'#fbbf24',doctrine:'Beskad Duelists',morale:95,readiness:90}];
+const roster=[{name:'CT-7567 Rex',regiment:'501st Legion',role:'Captain',status:'Active',loadout:'DC-17, Jetpack'},{name:'CC-3636 Wolffe',regiment:'104th Wolfpack',role:'Commander',status:'Active',loadout:'DC-17m'},{name:'Fox',regiment:'Coruscant Guard',role:'Commander',status:'Guard Duty',loadout:'Z-6'},{name:'Waxer',regiment:'212th Attack Battalion',role:'Trooper',status:'Field',loadout:'DC-15A'},{name:'Bo-Katan Kryze',regiment:'Mandalorian Cohort',role:'Alor',status:'Active',loadout:'Dual Westars'},{name:'Arc Trooper Fives',regiment:'501st Legion',role:'ARC',status:'SpecOps',loadout:'DC-17m'},{name:'First Order Agent',regiment:'First Order SpecOps',role:'Operative',status:'Recon',loadout:'SE-44C'},{name:'Echo',regiment:'501st Legion',role:'ARC',status:'Active',loadout:'DC-17m'}];
+const reports=[{id:1,title:'Docking Bay 94 Skirmish',regiment:'501st Legion',severity:'High',summary:'Short engagement with smugglers, secured cargo.',author:'CT-7567 Rex',timestamp:'12:04 Coruscant Standard'},{id:2,title:'Checkpoint Riot',regiment:'Coruscant Guard',severity:'Medium',summary:'Civilians unrest contained, no casualties.',author:'Fox',timestamp:'10:44 Coruscant Standard'},{id:3,title:'Dune Sea Patrol',regiment:'212th Attack Battalion',severity:'Low',summary:'Sandstorm interference, recovered sensor array.',author:'Waxer',timestamp:'08:15 Local Tatooine'}];
+const messages=[];const contacts=[{name:'Obi-Wan Kenobi',role:'Jedi General',channel:'Direct'},{name:'Ahsoka Tano',role:'Advisor',channel:'Direct'},{name:'Admiral Yularen',role:'Fleet Command',channel:'Fleet Wide'}];
+const templates=[{title:'Patrol Debrief',body:'Patrol route, anomalies detected, engagements, intel secured, casualties, ordnance expenditure, recommendations.'},{title:'Forward Operating Base Sitrep',body:'FOB status, supply chain, casualty report, morale, defensive grid, radar/sonar sweeps.'},{title:'Covert Ops After Action',body:'Objective, infiltration method, stealth integrity, data exfil, countermeasures, extraction, notes.'}];
+const games=[{title:'Trench Run Simulator',desc:'Navigate Death Star trenches, avoid turbolasers.',progress:56},{title:'Astromech Slice',desc:'Rotate holocylinders to crack security nodes.',progress:72},{title:'Saber Forms',desc:'Practice Form III deflections vs remote droids.',progress:44},{title:'Beskad Duel',desc:'Parry timing trainer for Mandalorian duelists.',progress:33},{title:'Podrace Dash',desc:'Boost through canyon checkpoints.',progress:81},{title:'Interceptor Drill',desc:'TIE/IN evasive maneuvers.',progress:66}];
+const holonetFeed=[{author:'Holonet News',content:'Breaking: Imperial supply convoy departs Kuat. Escort wings scrambled.',tags:['#Logistics','#Empire'],time:'2m'},{author:'Clanker Tracker',content:'Separatist droids spotted near abandoned temple ruins on Jedha.',tags:['#Recon','#Alert'],time:'8m'},{author:'Cantina Insider',content:'Rumors of high-stakes sabacc on Nar Shaddaa tonight. Winner takes a Corellian Corvette.',tags:['#Gossip','#Underworld'],time:'12m'}];
+const announcements=[{title:'Fleet Briefing 1900',body:'All regimental COs report to bridge. Holotables updated with rebel vectors.',author:'Admiral Yularen',time:'Now'},{title:'Barracks Sanitation',body:'Standard decon sweep. Remove all unauthorized equipment from bunks.',author:'Quartermaster',time:'1h'},{title:'Jedi Liaison',body:'Knight Secura available for consultation on Geonosis fauna behavior.',author:'Council Dispatch',time:'3h'}];
+let alertLog=[];let timeline=[{title:'Recon sweep launched',detail:'Probe droids deployed to valley grid 7',time:'02:03'},{title:'Fuel cells secured',detail:'Hangar 12 restocked',time:'01:44'},{title:'Encrypted packet received',detail:'Slicing in progress',time:'01:23'}];
+function switchPanel(id){document.querySelectorAll('.panel').forEach(p=>p.style.display='none');document.getElementById(id+'-panel').style.display='block';}
+function renderRegiments(){const grid=document.getElementById('regiment-grid');grid.innerHTML='';regiments.forEach(reg=>{const card=document.createElement('div');card.className='game-card';card.style.borderColor=reg.color;card.innerHTML=`<div class="game-title" style="color:${reg.color}">${reg.name}</div><div class="game-meta">${reg.doctrine}</div><div class="progress"><div class="progress-bar" style="width:${reg.readiness}%"></div></div><div class="flex" style="justify-content: space-between;"><span class="pill">Morale ${reg.morale}%</span><span class="pill">Readiness ${reg.readiness}%</span></div>`;grid.appendChild(card);});}
+function renderRoster(){const tbody=document.querySelector('#roster-table tbody');tbody.innerHTML='';roster.forEach(s=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${s.name}</td><td>${s.regiment}</td><td>${s.role}</td><td><span class="badge ${s.status==='Active'?'':'badge-warning'}">${s.status}</span></td><td>${s.loadout}</td>`;tbody.appendChild(tr);});}
+function renderReports(list=reports){const container=document.getElementById('report-list');container.innerHTML='';list.forEach(r=>{const item=document.createElement('div');item.className='list-item';item.innerHTML=`<div class="avatar">${r.author.split(' ')[0][0]}${r.author.split(' ')[1]?.[0]||''}<div class="shield"></div></div><div style="flex:1;"><div class="flex" style="justify-content: space-between;"><h4 class="subtitle">${r.title}</h4><span class="badge ${r.severity==='Critical'?'badge-danger':''}">${r.severity}</span></div><div class="muted">${r.regiment} • ${r.author}</div><div class="timestamp">${r.timestamp}</div><div class="divider"></div><div>${r.summary}</div></div>`;container.appendChild(item);});}
+function renderContacts(){const select=document.getElementById('message-recipient');const list=document.getElementById('contact-list');const modalList=document.getElementById('contact-modal-list');select.innerHTML='';list.innerHTML='';modalList.innerHTML='';contacts.forEach(c=>{const opt=document.createElement('option');opt.textContent=`${c.name} (${c.role})`;select.appendChild(opt);const item=document.createElement('div');item.className='list-item';item.innerHTML=`<div class="avatar">${c.name[0]}</div><div style="flex:1;"><div class="flex" style="justify-content: space-between;"><h4 class="subtitle">${c.name}</h4><span class="pill">${c.channel}</span></div><div class="muted">${c.role}</div></div>`;list.appendChild(item);modalList.appendChild(item.cloneNode(true));});}
+function renderTemplates(){const list=document.getElementById('template-list');list.innerHTML='';templates.forEach(t=>{const item=document.createElement('div');item.className='list-item';item.innerHTML=`<div style="flex:1;"><h4 class="subtitle">${t.title}</h4><div class="muted">${t.body}</div></div><button class="holo-button" onclick="loadTemplate('${t.title.replace("'",'')}')">Load</button>`;list.appendChild(item);});}
+function renderGames(){const grid=document.getElementById('game-grid');grid.innerHTML='';games.forEach(g=>{const card=document.createElement('div');card.className='game-card';card.innerHTML=`<h4 class="game-title">${g.title}</h4><div class="game-meta">${g.desc}</div><div class="progress"><div class="progress-bar" style="width:${g.progress}%"></div></div><div class="flex" style="justify-content: space-between; margin-top:8px;"><span class="tag">Sim Grade</span><span class="pill">${g.progress}%</span></div>`;grid.appendChild(card);});}
+function renderHolonet(){const feed=document.getElementById('holonet-feed');feed.innerHTML='';holonetFeed.forEach(p=>{const post=document.createElement('div');post.className='post';post.innerHTML=`<div class="flex" style="justify-content: space-between;"><h4>${p.author}</h4><span class="timestamp">${p.time}</span></div><div>${p.content}</div><div class="flex" style="margin-top:6px;">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><div class="meta-line"><span>Boosts ${Math.floor(Math.random()*400)+20}</span><span>Relays ${Math.floor(Math.random()*300)+10}</span></div>`;feed.appendChild(post);});}
+function renderAnnouncements(){const list=document.getElementById('announcement-list');list.innerHTML='';announcements.forEach(a=>{const item=document.createElement('div');item.className='announcement';item.innerHTML=`<small>${a.time}</small><h3>${a.title}</h3><p>${a.body}</p><div class="muted">${a.author}</div>`;list.appendChild(item);});}
+function renderTimeline(){const t=document.getElementById('timeline');t.innerHTML='';timeline.forEach(entry=>{const item=document.createElement('div');item.className='timeline-item';item.innerHTML=`<h4 class="subtitle">${entry.title}</h4><div class="muted">${entry.detail}</div><div class="timestamp">${entry.time}</div>`;t.appendChild(item);});}
+function renderTelemetry(){const log=document.getElementById('telemetry-log');log.innerHTML=alertLog.slice(-12).map(l=>`[${l.time}] ${l.message}`).join('
+');}
+function renderMessages(){const log=document.getElementById('message-log');const full=document.getElementById('full-message-log');log.innerHTML=messages.slice(-8).map(m=>`<div class="log-entry">[${m.time}] ${m.from} -> ${m.to}: ${m.body}</div>`).join('');full.innerHTML=messages.map(m=>`<div class="log-entry">[${m.time}] ${m.from} -> ${m.to} (${m.channel}): ${m.body}</div>`).join('');}
+function filterReports(){const q=document.getElementById('report-search').value.toLowerCase();const severity=document.getElementById('report-filter').value;if(!q && severity==='all'){renderReports();return;}const filtered=reports.filter(r=>{const match=r.title.toLowerCase().includes(q)||r.author.toLowerCase().includes(q)||r.regiment.toLowerCase().includes(q);const sev=severity==='all'||r.severity===severity;return match&&sev;});renderReports(filtered);} 
+function loadTemplate(title){const tpl=templates.find(t=>t.title===title);if(tpl){document.getElementById('report-title').value=tpl.title;document.getElementById('report-summary').value=tpl.body;}}
+function openModal(id){document.getElementById(id+'-modal').classList.add('active');}
+function closeModal(id){document.getElementById(id+'-modal').classList.remove('active');}
+function saveReport(){const report={title:document.getElementById('report-title').value||'Untitled Draft',regiment:document.getElementById('report-regiment').value,severity:document.getElementById('report-severity').value,summary:document.getElementById('report-summary').value||'Pending details',author:'Auto-Draft',timestamp:new Date().toLocaleTimeString()};reports.push(report);renderReports();alert('Draft stored in encrypted cache.');}
+function submitReport(){const report={title:document.getElementById('report-title').value||'Untitled',regiment:document.getElementById('report-regiment').value||regiments[0].name,severity:document.getElementById('report-severity').value,summary:document.getElementById('report-summary').value||'No summary',author:'Filed via datapad',timestamp:new Date().toLocaleTimeString()};reports.unshift(report);renderReports();generateAlert('Report submitted: '+report.title);} 
+function injectReportLore(){document.getElementById('report-summary').value='Forces advanced under low-visibility sand squall. Thermal signatures confirmed hostile armor. Called in LAAT support, established perimeter, secured artifact crate. Casualties minimal. Requesting med-evac and long-range sensor recalibration.';}
+function sendMessage(){const to=document.getElementById('message-recipient').value||'Unknown';const channel=document.getElementById('message-channel').value;const body=document.getElementById('message-body').value||'Ping';const packet={from:'Datapad Operator',to,channel,body,time:new Date().toLocaleTimeString()};messages.push(packet);renderMessages();document.getElementById('message-body').value='';}
+function simulateMessage(){const random=contacts[Math.floor(Math.random()*contacts.length)];const body=['Requesting evac route.','Need fresh power packs.','Enemy armor sighted.','Slicing door controls now.','Setting up forward beacon.'][Math.floor(Math.random()*5)];messages.push({from:random.name,to:'Command',channel:random.channel,body,time:new Date().toLocaleTimeString()});renderMessages();}
+function seedContacts(){['Sabine Wren','Captain Phasma','General Hera','Agent Kallus','Commander Cody','Jango Fett'].forEach(name=>contacts.push({name,role:'Auxiliary',channel:'Direct'}));renderContacts();}
+function addContact(){const name=document.getElementById('contact-name').value;const role=document.getElementById('contact-role').value||'Unknown';if(name){contacts.push({name,role,channel:'Direct'});renderContacts();}}
+function addRegiment(){const name='Custom Cohort '+(regiments.length+1);regiments.push({name,color:'#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'),doctrine:'Adaptive',morale:80+Math.floor(Math.random()*10),readiness:80+Math.floor(Math.random()*10)});renderRegiments();populateRegimentSelect();}
+function populateRegimentSelect(){const select=document.getElementById('report-regiment');select.innerHTML='';regiments.forEach(r=>{const opt=document.createElement('option');opt.textContent=r.name;select.appendChild(opt);});}
+function generateAlert(message){const entry={time:new Date().toLocaleTimeString(),message:message||['TIE squadron scrambled','Turbolaser grid warming','Motion sensor ping in hangar','Atmospheric shields cycling','Encrypted ping from probe droid'][Math.floor(Math.random()*5)]};alertLog.push(entry);const log=document.getElementById('alert-log');log.innerHTML=alertLog.slice(-12).map(a=>`<div class="log-entry">${a.time} :: ${a.message}</div>`).join('');timeline.unshift({title:entry.message,detail:'Auto-added to timeline',time:entry.time});renderTimeline();renderTelemetry();}
+function simulateSync(){generateAlert('Fleet-wide hypersync');document.getElementById('active-units').textContent=Math.floor(Math.random()*40)+110;document.getElementById('readiness').textContent=Math.floor(Math.random()*10)+90+'%';document.getElementById('uptime').textContent='99.'+Math.floor(Math.random()*9)+'%';}
+function launchMiniGame(){const random=games[Math.floor(Math.random()*games.length)];alert('Launching sim: '+random.title);} 
+function postHolonet(){const content='Field dispatch '+Math.floor(Math.random()*9999);holonetFeed.unshift({author:'CO Dispatch',content,tags:['#Field'],time:'Now'});renderHolonet();}
+function createAnnouncement(){const title=document.getElementById('announce-title').value||'General Bulletin';const body=document.getElementById('announce-body').value||'Stand by for details';announcements.unshift({title,body,author:'Datapad',time:'Now'});renderAnnouncements();closeModal('announce');}
+function simulateTelemetry(){generateAlert('Telemetry packet');}
+function init(){renderRegiments();renderRoster();renderReports();renderContacts();renderTemplates();renderGames();renderHolonet();renderAnnouncements();renderMessages();renderTimeline();populateRegimentSelect();for(let i=0;i<8;i++){generateAlert();}for(let i=0;i<5;i++){simulateMessage();}}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+
+</body>
+</html>
+<!-- holo-lore entry 1: data-stream authenticity check -->
+<!-- holo-lore entry 2: data-stream authenticity check -->
+<!-- holo-lore entry 3: data-stream authenticity check -->
+<!-- holo-lore entry 4: data-stream authenticity check -->
+<!-- holo-lore entry 5: data-stream authenticity check -->
+<!-- holo-lore entry 6: data-stream authenticity check -->
+<!-- holo-lore entry 7: data-stream authenticity check -->
+<!-- holo-lore entry 8: data-stream authenticity check -->
+<!-- holo-lore entry 9: data-stream authenticity check -->
+<!-- holo-lore entry 10: data-stream authenticity check -->
+<!-- holo-lore entry 11: data-stream authenticity check -->
+<!-- holo-lore entry 12: data-stream authenticity check -->
+<!-- holo-lore entry 13: data-stream authenticity check -->
+<!-- holo-lore entry 14: data-stream authenticity check -->
+<!-- holo-lore entry 15: data-stream authenticity check -->
+<!-- holo-lore entry 16: data-stream authenticity check -->
+<!-- holo-lore entry 17: data-stream authenticity check -->
+<!-- holo-lore entry 18: data-stream authenticity check -->
+<!-- holo-lore entry 19: data-stream authenticity check -->
+<!-- holo-lore entry 20: data-stream authenticity check -->
+<!-- holo-lore entry 21: data-stream authenticity check -->
+<!-- holo-lore entry 22: data-stream authenticity check -->
+<!-- holo-lore entry 23: data-stream authenticity check -->
+<!-- holo-lore entry 24: data-stream authenticity check -->
+<!-- holo-lore entry 25: data-stream authenticity check -->
+<!-- holo-lore entry 26: data-stream authenticity check -->
+<!-- holo-lore entry 27: data-stream authenticity check -->
+<!-- holo-lore entry 28: data-stream authenticity check -->
+<!-- holo-lore entry 29: data-stream authenticity check -->
+<!-- holo-lore entry 30: data-stream authenticity check -->
+<!-- holo-lore entry 31: data-stream authenticity check -->
+<!-- holo-lore entry 32: data-stream authenticity check -->
+<!-- holo-lore entry 33: data-stream authenticity check -->
+<!-- holo-lore entry 34: data-stream authenticity check -->
+<!-- holo-lore entry 35: data-stream authenticity check -->
+<!-- holo-lore entry 36: data-stream authenticity check -->
+<!-- holo-lore entry 37: data-stream authenticity check -->
+<!-- holo-lore entry 38: data-stream authenticity check -->
+<!-- holo-lore entry 39: data-stream authenticity check -->
+<!-- holo-lore entry 40: data-stream authenticity check -->
+<!-- holo-lore entry 41: data-stream authenticity check -->
+<!-- holo-lore entry 42: data-stream authenticity check -->
+<!-- holo-lore entry 43: data-stream authenticity check -->
+<!-- holo-lore entry 44: data-stream authenticity check -->
+<!-- holo-lore entry 45: data-stream authenticity check -->
+<!-- holo-lore entry 46: data-stream authenticity check -->
+<!-- holo-lore entry 47: data-stream authenticity check -->
+<!-- holo-lore entry 48: data-stream authenticity check -->
+<!-- holo-lore entry 49: data-stream authenticity check -->
+<!-- holo-lore entry 50: data-stream authenticity check -->
+<!-- holo-lore entry 51: data-stream authenticity check -->
+<!-- holo-lore entry 52: data-stream authenticity check -->
+<!-- holo-lore entry 53: data-stream authenticity check -->
+<!-- holo-lore entry 54: data-stream authenticity check -->
+<!-- holo-lore entry 55: data-stream authenticity check -->
+<!-- holo-lore entry 56: data-stream authenticity check -->
+<!-- holo-lore entry 57: data-stream authenticity check -->
+<!-- holo-lore entry 58: data-stream authenticity check -->
+<!-- holo-lore entry 59: data-stream authenticity check -->
+<!-- holo-lore entry 60: data-stream authenticity check -->
+<!-- holo-lore entry 61: data-stream authenticity check -->
+<!-- holo-lore entry 62: data-stream authenticity check -->
+<!-- holo-lore entry 63: data-stream authenticity check -->
+<!-- holo-lore entry 64: data-stream authenticity check -->
+<!-- holo-lore entry 65: data-stream authenticity check -->
+<!-- holo-lore entry 66: data-stream authenticity check -->
+<!-- holo-lore entry 67: data-stream authenticity check -->
+<!-- holo-lore entry 68: data-stream authenticity check -->
+<!-- holo-lore entry 69: data-stream authenticity check -->
+<!-- holo-lore entry 70: data-stream authenticity check -->
+<!-- holo-lore entry 71: data-stream authenticity check -->
+<!-- holo-lore entry 72: data-stream authenticity check -->
+<!-- holo-lore entry 73: data-stream authenticity check -->
+<!-- holo-lore entry 74: data-stream authenticity check -->
+<!-- holo-lore entry 75: data-stream authenticity check -->
+<!-- holo-lore entry 76: data-stream authenticity check -->
+<!-- holo-lore entry 77: data-stream authenticity check -->
+<!-- holo-lore entry 78: data-stream authenticity check -->
+<!-- holo-lore entry 79: data-stream authenticity check -->
+<!-- holo-lore entry 80: data-stream authenticity check -->
+<!-- holo-lore entry 81: data-stream authenticity check -->
+<!-- holo-lore entry 82: data-stream authenticity check -->
+<!-- holo-lore entry 83: data-stream authenticity check -->
+<!-- holo-lore entry 84: data-stream authenticity check -->
+<!-- holo-lore entry 85: data-stream authenticity check -->
+<!-- holo-lore entry 86: data-stream authenticity check -->
+<!-- holo-lore entry 87: data-stream authenticity check -->
+<!-- holo-lore entry 88: data-stream authenticity check -->
+<!-- holo-lore entry 89: data-stream authenticity check -->
+<!-- holo-lore entry 90: data-stream authenticity check -->
+<!-- holo-lore entry 91: data-stream authenticity check -->
+<!-- holo-lore entry 92: data-stream authenticity check -->
+<!-- holo-lore entry 93: data-stream authenticity check -->
+<!-- holo-lore entry 94: data-stream authenticity check -->
+<!-- holo-lore entry 95: data-stream authenticity check -->
+<!-- holo-lore entry 96: data-stream authenticity check -->
+<!-- holo-lore entry 97: data-stream authenticity check -->
+<!-- holo-lore entry 98: data-stream authenticity check -->
+<!-- holo-lore entry 99: data-stream authenticity check -->
+<!-- holo-lore entry 100: data-stream authenticity check -->
+<!-- holo-lore entry 101: data-stream authenticity check -->
+<!-- holo-lore entry 102: data-stream authenticity check -->
+<!-- holo-lore entry 103: data-stream authenticity check -->
+<!-- holo-lore entry 104: data-stream authenticity check -->
+<!-- holo-lore entry 105: data-stream authenticity check -->
+<!-- holo-lore entry 106: data-stream authenticity check -->
+<!-- holo-lore entry 107: data-stream authenticity check -->
+<!-- holo-lore entry 108: data-stream authenticity check -->
+<!-- holo-lore entry 109: data-stream authenticity check -->
+<!-- holo-lore entry 110: data-stream authenticity check -->
+<!-- holo-lore entry 111: data-stream authenticity check -->
+<!-- holo-lore entry 112: data-stream authenticity check -->
+<!-- holo-lore entry 113: data-stream authenticity check -->
+<!-- holo-lore entry 114: data-stream authenticity check -->
+<!-- holo-lore entry 115: data-stream authenticity check -->
+<!-- holo-lore entry 116: data-stream authenticity check -->
+<!-- holo-lore entry 117: data-stream authenticity check -->
+<!-- holo-lore entry 118: data-stream authenticity check -->
+<!-- holo-lore entry 119: data-stream authenticity check -->
+<!-- holo-lore entry 120: data-stream authenticity check -->
+<!-- holo-lore entry 121: data-stream authenticity check -->
+<!-- holo-lore entry 122: data-stream authenticity check -->
+<!-- holo-lore entry 123: data-stream authenticity check -->
+<!-- holo-lore entry 124: data-stream authenticity check -->
+<!-- holo-lore entry 125: data-stream authenticity check -->
+<!-- holo-lore entry 126: data-stream authenticity check -->
+<!-- holo-lore entry 127: data-stream authenticity check -->
+<!-- holo-lore entry 128: data-stream authenticity check -->
+<!-- holo-lore entry 129: data-stream authenticity check -->
+<!-- holo-lore entry 130: data-stream authenticity check -->
+<!-- holo-lore entry 131: data-stream authenticity check -->
+<!-- holo-lore entry 132: data-stream authenticity check -->
+<!-- holo-lore entry 133: data-stream authenticity check -->
+<!-- holo-lore entry 134: data-stream authenticity check -->
+<!-- holo-lore entry 135: data-stream authenticity check -->
+<!-- holo-lore entry 136: data-stream authenticity check -->
+<!-- holo-lore entry 137: data-stream authenticity check -->
+<!-- holo-lore entry 138: data-stream authenticity check -->
+<!-- holo-lore entry 139: data-stream authenticity check -->
+<!-- holo-lore entry 140: data-stream authenticity check -->
+<!-- holo-lore entry 141: data-stream authenticity check -->
+<!-- holo-lore entry 142: data-stream authenticity check -->
+<!-- holo-lore entry 143: data-stream authenticity check -->
+<!-- holo-lore entry 144: data-stream authenticity check -->
+<!-- holo-lore entry 145: data-stream authenticity check -->
+<!-- holo-lore entry 146: data-stream authenticity check -->
+<!-- holo-lore entry 147: data-stream authenticity check -->
+<!-- holo-lore entry 148: data-stream authenticity check -->
+<!-- holo-lore entry 149: data-stream authenticity check -->
+<!-- holo-lore entry 150: data-stream authenticity check -->
+<!-- holo-lore entry 151: data-stream authenticity check -->
+<!-- holo-lore entry 152: data-stream authenticity check -->
+<!-- holo-lore entry 153: data-stream authenticity check -->
+<!-- holo-lore entry 154: data-stream authenticity check -->
+<!-- holo-lore entry 155: data-stream authenticity check -->
+<!-- holo-lore entry 156: data-stream authenticity check -->
+<!-- holo-lore entry 157: data-stream authenticity check -->
+<!-- holo-lore entry 158: data-stream authenticity check -->
+<!-- holo-lore entry 159: data-stream authenticity check -->
+<!-- holo-lore entry 160: data-stream authenticity check -->
+<!-- holo-lore entry 161: data-stream authenticity check -->
+<!-- holo-lore entry 162: data-stream authenticity check -->
+<!-- holo-lore entry 163: data-stream authenticity check -->
+<!-- holo-lore entry 164: data-stream authenticity check -->
+<!-- holo-lore entry 165: data-stream authenticity check -->
+<!-- holo-lore entry 166: data-stream authenticity check -->
+<!-- holo-lore entry 167: data-stream authenticity check -->
+<!-- holo-lore entry 168: data-stream authenticity check -->
+<!-- holo-lore entry 169: data-stream authenticity check -->
+<!-- holo-lore entry 170: data-stream authenticity check -->
+<!-- holo-lore entry 171: data-stream authenticity check -->
+<!-- holo-lore entry 172: data-stream authenticity check -->
+<!-- holo-lore entry 173: data-stream authenticity check -->
+<!-- holo-lore entry 174: data-stream authenticity check -->
+<!-- holo-lore entry 175: data-stream authenticity check -->
+<!-- holo-lore entry 176: data-stream authenticity check -->
+<!-- holo-lore entry 177: data-stream authenticity check -->
+<!-- holo-lore entry 178: data-stream authenticity check -->
+<!-- holo-lore entry 179: data-stream authenticity check -->
+<!-- holo-lore entry 180: data-stream authenticity check -->
+<!-- holo-lore entry 181: data-stream authenticity check -->
+<!-- holo-lore entry 182: data-stream authenticity check -->
+<!-- holo-lore entry 183: data-stream authenticity check -->
+<!-- holo-lore entry 184: data-stream authenticity check -->
+<!-- holo-lore entry 185: data-stream authenticity check -->
+<!-- holo-lore entry 186: data-stream authenticity check -->
+<!-- holo-lore entry 187: data-stream authenticity check -->
+<!-- holo-lore entry 188: data-stream authenticity check -->
+<!-- holo-lore entry 189: data-stream authenticity check -->
+<!-- holo-lore entry 190: data-stream authenticity check -->
+<!-- holo-lore entry 191: data-stream authenticity check -->
+<!-- holo-lore entry 192: data-stream authenticity check -->
+<!-- holo-lore entry 193: data-stream authenticity check -->
+<!-- holo-lore entry 194: data-stream authenticity check -->
+<!-- holo-lore entry 195: data-stream authenticity check -->
+<!-- holo-lore entry 196: data-stream authenticity check -->
+<!-- holo-lore entry 197: data-stream authenticity check -->
+<!-- holo-lore entry 198: data-stream authenticity check -->
+<!-- holo-lore entry 199: data-stream authenticity check -->
+<!-- holo-lore entry 200: data-stream authenticity check -->
+<!-- holo-lore entry 201: data-stream authenticity check -->
+<!-- holo-lore entry 202: data-stream authenticity check -->
+<!-- holo-lore entry 203: data-stream authenticity check -->
+<!-- holo-lore entry 204: data-stream authenticity check -->
+<!-- holo-lore entry 205: data-stream authenticity check -->
+<!-- holo-lore entry 206: data-stream authenticity check -->
+<!-- holo-lore entry 207: data-stream authenticity check -->
+<!-- holo-lore entry 208: data-stream authenticity check -->
+<!-- holo-lore entry 209: data-stream authenticity check -->
+<!-- holo-lore entry 210: data-stream authenticity check -->
+<!-- holo-lore entry 211: data-stream authenticity check -->
+<!-- holo-lore entry 212: data-stream authenticity check -->
+<!-- holo-lore entry 213: data-stream authenticity check -->
+<!-- holo-lore entry 214: data-stream authenticity check -->
+<!-- holo-lore entry 215: data-stream authenticity check -->
+<!-- holo-lore entry 216: data-stream authenticity check -->
+<!-- holo-lore entry 217: data-stream authenticity check -->
+<!-- holo-lore entry 218: data-stream authenticity check -->
+<!-- holo-lore entry 219: data-stream authenticity check -->
+<!-- holo-lore entry 220: data-stream authenticity check -->
+<!-- holo-lore entry 221: data-stream authenticity check -->
+<!-- holo-lore entry 222: data-stream authenticity check -->
+<!-- holo-lore entry 223: data-stream authenticity check -->
+<!-- holo-lore entry 224: data-stream authenticity check -->
+<!-- holo-lore entry 225: data-stream authenticity check -->
+<!-- holo-lore entry 226: data-stream authenticity check -->
+<!-- holo-lore entry 227: data-stream authenticity check -->
+<!-- holo-lore entry 228: data-stream authenticity check -->
+<!-- holo-lore entry 229: data-stream authenticity check -->
+<!-- holo-lore entry 230: data-stream authenticity check -->
+<!-- holo-lore entry 231: data-stream authenticity check -->
+<!-- holo-lore entry 232: data-stream authenticity check -->
+<!-- holo-lore entry 233: data-stream authenticity check -->
+<!-- holo-lore entry 234: data-stream authenticity check -->
+<!-- holo-lore entry 235: data-stream authenticity check -->
+<!-- holo-lore entry 236: data-stream authenticity check -->
+<!-- holo-lore entry 237: data-stream authenticity check -->
+<!-- holo-lore entry 238: data-stream authenticity check -->
+<!-- holo-lore entry 239: data-stream authenticity check -->
+<!-- holo-lore entry 240: data-stream authenticity check -->
+<!-- holo-lore entry 241: data-stream authenticity check -->
+<!-- holo-lore entry 242: data-stream authenticity check -->
+<!-- holo-lore entry 243: data-stream authenticity check -->
+<!-- holo-lore entry 244: data-stream authenticity check -->
+<!-- holo-lore entry 245: data-stream authenticity check -->
+<!-- holo-lore entry 246: data-stream authenticity check -->
+<!-- holo-lore entry 247: data-stream authenticity check -->
+<!-- holo-lore entry 248: data-stream authenticity check -->
+<!-- holo-lore entry 249: data-stream authenticity check -->
+<!-- holo-lore entry 250: data-stream authenticity check -->
+<!-- holo-lore entry 251: data-stream authenticity check -->
+<!-- holo-lore entry 252: data-stream authenticity check -->
+<!-- holo-lore entry 253: data-stream authenticity check -->
+<!-- holo-lore entry 254: data-stream authenticity check -->
+<!-- holo-lore entry 255: data-stream authenticity check -->
+<!-- holo-lore entry 256: data-stream authenticity check -->
+<!-- holo-lore entry 257: data-stream authenticity check -->
+<!-- holo-lore entry 258: data-stream authenticity check -->
+<!-- holo-lore entry 259: data-stream authenticity check -->
+<!-- holo-lore entry 260: data-stream authenticity check -->
+<!-- holo-lore entry 261: data-stream authenticity check -->
+<!-- holo-lore entry 262: data-stream authenticity check -->
+<!-- holo-lore entry 263: data-stream authenticity check -->
+<!-- holo-lore entry 264: data-stream authenticity check -->
+<!-- holo-lore entry 265: data-stream authenticity check -->
+<!-- holo-lore entry 266: data-stream authenticity check -->
+<!-- holo-lore entry 267: data-stream authenticity check -->
+<!-- holo-lore entry 268: data-stream authenticity check -->
+<!-- holo-lore entry 269: data-stream authenticity check -->
+<!-- holo-lore entry 270: data-stream authenticity check -->
+<!-- holo-lore entry 271: data-stream authenticity check -->
+<!-- holo-lore entry 272: data-stream authenticity check -->
+<!-- holo-lore entry 273: data-stream authenticity check -->
+<!-- holo-lore entry 274: data-stream authenticity check -->
+<!-- holo-lore entry 275: data-stream authenticity check -->
+<!-- holo-lore entry 276: data-stream authenticity check -->
+<!-- holo-lore entry 277: data-stream authenticity check -->
+<!-- holo-lore entry 278: data-stream authenticity check -->
+<!-- holo-lore entry 279: data-stream authenticity check -->
+<!-- holo-lore entry 280: data-stream authenticity check -->
+<!-- holo-lore entry 281: data-stream authenticity check -->
+<!-- holo-lore entry 282: data-stream authenticity check -->
+<!-- holo-lore entry 283: data-stream authenticity check -->
+<!-- holo-lore entry 284: data-stream authenticity check -->
+<!-- holo-lore entry 285: data-stream authenticity check -->
+<!-- holo-lore entry 286: data-stream authenticity check -->
+<!-- holo-lore entry 287: data-stream authenticity check -->
+<!-- holo-lore entry 288: data-stream authenticity check -->
+<!-- holo-lore entry 289: data-stream authenticity check -->
+<!-- holo-lore entry 290: data-stream authenticity check -->
+<!-- holo-lore entry 291: data-stream authenticity check -->
+<!-- holo-lore entry 292: data-stream authenticity check -->
+<!-- holo-lore entry 293: data-stream authenticity check -->
+<!-- holo-lore entry 294: data-stream authenticity check -->
+<!-- holo-lore entry 295: data-stream authenticity check -->
+<!-- holo-lore entry 296: data-stream authenticity check -->
+<!-- holo-lore entry 297: data-stream authenticity check -->
+<!-- holo-lore entry 298: data-stream authenticity check -->
+<!-- holo-lore entry 299: data-stream authenticity check -->
+<!-- holo-lore entry 300: data-stream authenticity check -->
+<!-- holo-lore entry 301: data-stream authenticity check -->
+<!-- holo-lore entry 302: data-stream authenticity check -->
+<!-- holo-lore entry 303: data-stream authenticity check -->
+<!-- holo-lore entry 304: data-stream authenticity check -->
+<!-- holo-lore entry 305: data-stream authenticity check -->
+<!-- holo-lore entry 306: data-stream authenticity check -->
+<!-- holo-lore entry 307: data-stream authenticity check -->
+<!-- holo-lore entry 308: data-stream authenticity check -->
+<!-- holo-lore entry 309: data-stream authenticity check -->
+<!-- holo-lore entry 310: data-stream authenticity check -->
+<!-- holo-lore entry 311: data-stream authenticity check -->
+<!-- holo-lore entry 312: data-stream authenticity check -->
+<!-- holo-lore entry 313: data-stream authenticity check -->
+<!-- holo-lore entry 314: data-stream authenticity check -->
+<!-- holo-lore entry 315: data-stream authenticity check -->
+<!-- holo-lore entry 316: data-stream authenticity check -->
+<!-- holo-lore entry 317: data-stream authenticity check -->
+<!-- holo-lore entry 318: data-stream authenticity check -->
+<!-- holo-lore entry 319: data-stream authenticity check -->
+<!-- holo-lore entry 320: data-stream authenticity check -->
+<!-- holo-lore entry 321: data-stream authenticity check -->
+<!-- holo-lore entry 322: data-stream authenticity check -->
+<!-- holo-lore entry 323: data-stream authenticity check -->
+<!-- holo-lore entry 324: data-stream authenticity check -->
+<!-- holo-lore entry 325: data-stream authenticity check -->
+<!-- holo-lore entry 326: data-stream authenticity check -->
+<!-- holo-lore entry 327: data-stream authenticity check -->
+<!-- holo-lore entry 328: data-stream authenticity check -->
+<!-- holo-lore entry 329: data-stream authenticity check -->
+<!-- holo-lore entry 330: data-stream authenticity check -->
+<!-- holo-lore entry 331: data-stream authenticity check -->
+<!-- holo-lore entry 332: data-stream authenticity check -->
+<!-- holo-lore entry 333: data-stream authenticity check -->
+<!-- holo-lore entry 334: data-stream authenticity check -->
+<!-- holo-lore entry 335: data-stream authenticity check -->
+<!-- holo-lore entry 336: data-stream authenticity check -->
+<!-- holo-lore entry 337: data-stream authenticity check -->
+<!-- holo-lore entry 338: data-stream authenticity check -->
+<!-- holo-lore entry 339: data-stream authenticity check -->
+<!-- holo-lore entry 340: data-stream authenticity check -->
+<!-- holo-lore entry 341: data-stream authenticity check -->
+<!-- holo-lore entry 342: data-stream authenticity check -->
+<!-- holo-lore entry 343: data-stream authenticity check -->
+<!-- holo-lore entry 344: data-stream authenticity check -->
+<!-- holo-lore entry 345: data-stream authenticity check -->
+<!-- holo-lore entry 346: data-stream authenticity check -->
+<!-- holo-lore entry 347: data-stream authenticity check -->
+<!-- holo-lore entry 348: data-stream authenticity check -->
+<!-- holo-lore entry 349: data-stream authenticity check -->
+<!-- holo-lore entry 350: data-stream authenticity check -->
+<!-- holo-lore entry 351: data-stream authenticity check -->
+<!-- holo-lore entry 352: data-stream authenticity check -->
+<!-- holo-lore entry 353: data-stream authenticity check -->
+<!-- holo-lore entry 354: data-stream authenticity check -->
+<!-- holo-lore entry 355: data-stream authenticity check -->
+<!-- holo-lore entry 356: data-stream authenticity check -->
+<!-- holo-lore entry 357: data-stream authenticity check -->
+<!-- holo-lore entry 358: data-stream authenticity check -->
+<!-- holo-lore entry 359: data-stream authenticity check -->
+<!-- holo-lore entry 360: data-stream authenticity check -->
+<!-- holo-lore entry 361: data-stream authenticity check -->
+<!-- holo-lore entry 362: data-stream authenticity check -->
+<!-- holo-lore entry 363: data-stream authenticity check -->
+<!-- holo-lore entry 364: data-stream authenticity check -->
+<!-- holo-lore entry 365: data-stream authenticity check -->
+<!-- holo-lore entry 366: data-stream authenticity check -->
+<!-- holo-lore entry 367: data-stream authenticity check -->
+<!-- holo-lore entry 368: data-stream authenticity check -->
+<!-- holo-lore entry 369: data-stream authenticity check -->
+<!-- holo-lore entry 370: data-stream authenticity check -->
+<!-- holo-lore entry 371: data-stream authenticity check -->
+<!-- holo-lore entry 372: data-stream authenticity check -->
+<!-- holo-lore entry 373: data-stream authenticity check -->
+<!-- holo-lore entry 374: data-stream authenticity check -->
+<!-- holo-lore entry 375: data-stream authenticity check -->
+<!-- holo-lore entry 376: data-stream authenticity check -->
+<!-- holo-lore entry 377: data-stream authenticity check -->
+<!-- holo-lore entry 378: data-stream authenticity check -->
+<!-- holo-lore entry 379: data-stream authenticity check -->
+<!-- holo-lore entry 380: data-stream authenticity check -->
+<!-- holo-lore entry 381: data-stream authenticity check -->
+<!-- holo-lore entry 382: data-stream authenticity check -->
+<!-- holo-lore entry 383: data-stream authenticity check -->
+<!-- holo-lore entry 384: data-stream authenticity check -->
+<!-- holo-lore entry 385: data-stream authenticity check -->
+<!-- holo-lore entry 386: data-stream authenticity check -->
+<!-- holo-lore entry 387: data-stream authenticity check -->
+<!-- holo-lore entry 388: data-stream authenticity check -->
+<!-- holo-lore entry 389: data-stream authenticity check -->
+<!-- holo-lore entry 390: data-stream authenticity check -->
+<!-- holo-lore entry 391: data-stream authenticity check -->
+<!-- holo-lore entry 392: data-stream authenticity check -->
+<!-- holo-lore entry 393: data-stream authenticity check -->
+<!-- holo-lore entry 394: data-stream authenticity check -->
+<!-- holo-lore entry 395: data-stream authenticity check -->
+<!-- holo-lore entry 396: data-stream authenticity check -->
+<!-- holo-lore entry 397: data-stream authenticity check -->
+<!-- holo-lore entry 398: data-stream authenticity check -->
+<!-- holo-lore entry 399: data-stream authenticity check -->
+<!-- holo-lore entry 400: data-stream authenticity check -->
+<!-- holo-lore entry 401: data-stream authenticity check -->
+<!-- holo-lore entry 402: data-stream authenticity check -->
+<!-- holo-lore entry 403: data-stream authenticity check -->
+<!-- holo-lore entry 404: data-stream authenticity check -->
+<!-- holo-lore entry 405: data-stream authenticity check -->
+<!-- holo-lore entry 406: data-stream authenticity check -->
+<!-- holo-lore entry 407: data-stream authenticity check -->
+<!-- holo-lore entry 408: data-stream authenticity check -->
+<!-- holo-lore entry 409: data-stream authenticity check -->
+<!-- holo-lore entry 410: data-stream authenticity check -->
+<!-- holo-lore entry 411: data-stream authenticity check -->
+<!-- holo-lore entry 412: data-stream authenticity check -->
+<!-- holo-lore entry 413: data-stream authenticity check -->
+<!-- holo-lore entry 414: data-stream authenticity check -->
+<!-- holo-lore entry 415: data-stream authenticity check -->
+<!-- holo-lore entry 416: data-stream authenticity check -->
+<!-- holo-lore entry 417: data-stream authenticity check -->
+<!-- holo-lore entry 418: data-stream authenticity check -->
+<!-- holo-lore entry 419: data-stream authenticity check -->
+<!-- holo-lore entry 420: data-stream authenticity check -->
+<!-- holo-lore entry 421: data-stream authenticity check -->
+<!-- holo-lore entry 422: data-stream authenticity check -->
+<!-- holo-lore entry 423: data-stream authenticity check -->
+<!-- holo-lore entry 424: data-stream authenticity check -->
+<!-- holo-lore entry 425: data-stream authenticity check -->
+<!-- holo-lore entry 426: data-stream authenticity check -->
+<!-- holo-lore entry 427: data-stream authenticity check -->
+<!-- holo-lore entry 428: data-stream authenticity check -->
+<!-- holo-lore entry 429: data-stream authenticity check -->
+<!-- holo-lore entry 430: data-stream authenticity check -->
+<!-- holo-lore entry 431: data-stream authenticity check -->
+<!-- holo-lore entry 432: data-stream authenticity check -->
+<!-- holo-lore entry 433: data-stream authenticity check -->
+<!-- holo-lore entry 434: data-stream authenticity check -->
+<!-- holo-lore entry 435: data-stream authenticity check -->
+<!-- holo-lore entry 436: data-stream authenticity check -->
+<!-- holo-lore entry 437: data-stream authenticity check -->
+<!-- holo-lore entry 438: data-stream authenticity check -->
+<!-- holo-lore entry 439: data-stream authenticity check -->
+<!-- holo-lore entry 440: data-stream authenticity check -->
+<!-- holo-lore entry 441: data-stream authenticity check -->
+<!-- holo-lore entry 442: data-stream authenticity check -->
+<!-- holo-lore entry 443: data-stream authenticity check -->
+<!-- holo-lore entry 444: data-stream authenticity check -->
+<!-- holo-lore entry 445: data-stream authenticity check -->
+<!-- holo-lore entry 446: data-stream authenticity check -->
+<!-- holo-lore entry 447: data-stream authenticity check -->
+<!-- holo-lore entry 448: data-stream authenticity check -->
+<!-- holo-lore entry 449: data-stream authenticity check -->
+<!-- holo-lore entry 450: data-stream authenticity check -->
+<!-- holo-lore entry 451: data-stream authenticity check -->
+<!-- holo-lore entry 452: data-stream authenticity check -->
+<!-- holo-lore entry 453: data-stream authenticity check -->
+<!-- holo-lore entry 454: data-stream authenticity check -->
+<!-- holo-lore entry 455: data-stream authenticity check -->
+<!-- holo-lore entry 456: data-stream authenticity check -->
+<!-- holo-lore entry 457: data-stream authenticity check -->
+<!-- holo-lore entry 458: data-stream authenticity check -->
+<!-- holo-lore entry 459: data-stream authenticity check -->
+<!-- holo-lore entry 460: data-stream authenticity check -->
+<!-- holo-lore entry 461: data-stream authenticity check -->
+<!-- holo-lore entry 462: data-stream authenticity check -->
+<!-- holo-lore entry 463: data-stream authenticity check -->
+<!-- holo-lore entry 464: data-stream authenticity check -->
+<!-- holo-lore entry 465: data-stream authenticity check -->
+<!-- holo-lore entry 466: data-stream authenticity check -->
+<!-- holo-lore entry 467: data-stream authenticity check -->
+<!-- holo-lore entry 468: data-stream authenticity check -->
+<!-- holo-lore entry 469: data-stream authenticity check -->
+<!-- holo-lore entry 470: data-stream authenticity check -->
+<!-- holo-lore entry 471: data-stream authenticity check -->
+<!-- holo-lore entry 472: data-stream authenticity check -->
+<!-- holo-lore entry 473: data-stream authenticity check -->
+<!-- holo-lore entry 474: data-stream authenticity check -->
+<!-- holo-lore entry 475: data-stream authenticity check -->
+<!-- holo-lore entry 476: data-stream authenticity check -->
+<!-- holo-lore entry 477: data-stream authenticity check -->
+<!-- holo-lore entry 478: data-stream authenticity check -->
+<!-- holo-lore entry 479: data-stream authenticity check -->
+<!-- holo-lore entry 480: data-stream authenticity check -->
+<!-- holo-lore entry 481: data-stream authenticity check -->
+<!-- holo-lore entry 482: data-stream authenticity check -->
+<!-- holo-lore entry 483: data-stream authenticity check -->
+<!-- holo-lore entry 484: data-stream authenticity check -->
+<!-- holo-lore entry 485: data-stream authenticity check -->
+<!-- holo-lore entry 486: data-stream authenticity check -->
+<!-- holo-lore entry 487: data-stream authenticity check -->
+<!-- holo-lore entry 488: data-stream authenticity check -->
+<!-- holo-lore entry 489: data-stream authenticity check -->
+<!-- holo-lore entry 490: data-stream authenticity check -->
+<!-- holo-lore entry 491: data-stream authenticity check -->
+<!-- holo-lore entry 492: data-stream authenticity check -->
+<!-- holo-lore entry 493: data-stream authenticity check -->
+<!-- holo-lore entry 494: data-stream authenticity check -->
+<!-- holo-lore entry 495: data-stream authenticity check -->
+<!-- holo-lore entry 496: data-stream authenticity check -->
+<!-- holo-lore entry 497: data-stream authenticity check -->
+<!-- holo-lore entry 498: data-stream authenticity check -->
+<!-- holo-lore entry 499: data-stream authenticity check -->
+<!-- holo-lore entry 500: data-stream authenticity check -->
+<!-- holo-lore entry 501: data-stream authenticity check -->
+<!-- holo-lore entry 502: data-stream authenticity check -->
+<!-- holo-lore entry 503: data-stream authenticity check -->
+<!-- holo-lore entry 504: data-stream authenticity check -->
+<!-- holo-lore entry 505: data-stream authenticity check -->
+<!-- holo-lore entry 506: data-stream authenticity check -->
+<!-- holo-lore entry 507: data-stream authenticity check -->
+<!-- holo-lore entry 508: data-stream authenticity check -->
+<!-- holo-lore entry 509: data-stream authenticity check -->
+<!-- holo-lore entry 510: data-stream authenticity check -->
+<!-- holo-lore entry 511: data-stream authenticity check -->
+<!-- holo-lore entry 512: data-stream authenticity check -->
+<!-- holo-lore entry 513: data-stream authenticity check -->
+<!-- holo-lore entry 514: data-stream authenticity check -->
+<!-- holo-lore entry 515: data-stream authenticity check -->
+<!-- holo-lore entry 516: data-stream authenticity check -->
+<!-- holo-lore entry 517: data-stream authenticity check -->
+<!-- holo-lore entry 518: data-stream authenticity check -->
+<!-- holo-lore entry 519: data-stream authenticity check -->
+<!-- holo-lore entry 520: data-stream authenticity check -->
+<!-- holo-lore entry 521: data-stream authenticity check -->
+<!-- holo-lore entry 522: data-stream authenticity check -->
+<!-- holo-lore entry 523: data-stream authenticity check -->
+<!-- holo-lore entry 524: data-stream authenticity check -->
+<!-- holo-lore entry 525: data-stream authenticity check -->
+<!-- holo-lore entry 526: data-stream authenticity check -->
+<!-- holo-lore entry 527: data-stream authenticity check -->
+<!-- holo-lore entry 528: data-stream authenticity check -->
+<!-- holo-lore entry 529: data-stream authenticity check -->
+<!-- holo-lore entry 530: data-stream authenticity check -->
+<!-- holo-lore entry 531: data-stream authenticity check -->
+<!-- holo-lore entry 532: data-stream authenticity check -->
+<!-- holo-lore entry 533: data-stream authenticity check -->
+<!-- holo-lore entry 534: data-stream authenticity check -->
+<!-- holo-lore entry 535: data-stream authenticity check -->
+<!-- holo-lore entry 536: data-stream authenticity check -->
+<!-- holo-lore entry 537: data-stream authenticity check -->
+<!-- holo-lore entry 538: data-stream authenticity check -->
+<!-- holo-lore entry 539: data-stream authenticity check -->
+<!-- holo-lore entry 540: data-stream authenticity check -->
+<!-- holo-lore entry 541: data-stream authenticity check -->
+<!-- holo-lore entry 542: data-stream authenticity check -->
+<!-- holo-lore entry 543: data-stream authenticity check -->
+<!-- holo-lore entry 544: data-stream authenticity check -->
+<!-- holo-lore entry 545: data-stream authenticity check -->
+<!-- holo-lore entry 546: data-stream authenticity check -->
+<!-- holo-lore entry 547: data-stream authenticity check -->
+<!-- holo-lore entry 548: data-stream authenticity check -->
+<!-- holo-lore entry 549: data-stream authenticity check -->
+<!-- holo-lore entry 550: data-stream authenticity check -->
+<!-- holo-lore entry 551: data-stream authenticity check -->
+<!-- holo-lore entry 552: data-stream authenticity check -->
+<!-- holo-lore entry 553: data-stream authenticity check -->
+<!-- holo-lore entry 554: data-stream authenticity check -->
+<!-- holo-lore entry 555: data-stream authenticity check -->
+<!-- holo-lore entry 556: data-stream authenticity check -->
+<!-- holo-lore entry 557: data-stream authenticity check -->
+<!-- holo-lore entry 558: data-stream authenticity check -->
+<!-- holo-lore entry 559: data-stream authenticity check -->
+<!-- holo-lore entry 560: data-stream authenticity check -->
+<!-- holo-lore entry 561: data-stream authenticity check -->
+<!-- holo-lore entry 562: data-stream authenticity check -->
+<!-- holo-lore entry 563: data-stream authenticity check -->
+<!-- holo-lore entry 564: data-stream authenticity check -->
+<!-- holo-lore entry 565: data-stream authenticity check -->
+<!-- holo-lore entry 566: data-stream authenticity check -->
+<!-- holo-lore entry 567: data-stream authenticity check -->
+<!-- holo-lore entry 568: data-stream authenticity check -->
+<!-- holo-lore entry 569: data-stream authenticity check -->
+<!-- holo-lore entry 570: data-stream authenticity check -->
+<!-- holo-lore entry 571: data-stream authenticity check -->
+<!-- holo-lore entry 572: data-stream authenticity check -->
+<!-- holo-lore entry 573: data-stream authenticity check -->
+<!-- holo-lore entry 574: data-stream authenticity check -->
+<!-- holo-lore entry 575: data-stream authenticity check -->
+<!-- holo-lore entry 576: data-stream authenticity check -->
+<!-- holo-lore entry 577: data-stream authenticity check -->
+<!-- holo-lore entry 578: data-stream authenticity check -->
+<!-- holo-lore entry 579: data-stream authenticity check -->
+<!-- holo-lore entry 580: data-stream authenticity check -->
+<!-- holo-lore entry 581: data-stream authenticity check -->
+<!-- holo-lore entry 582: data-stream authenticity check -->
+<!-- holo-lore entry 583: data-stream authenticity check -->
+<!-- holo-lore entry 584: data-stream authenticity check -->
+<!-- holo-lore entry 585: data-stream authenticity check -->
+<!-- holo-lore entry 586: data-stream authenticity check -->
+<!-- holo-lore entry 587: data-stream authenticity check -->
+<!-- holo-lore entry 588: data-stream authenticity check -->
+<!-- holo-lore entry 589: data-stream authenticity check -->
+<!-- holo-lore entry 590: data-stream authenticity check -->
+<!-- holo-lore entry 591: data-stream authenticity check -->
+<!-- holo-lore entry 592: data-stream authenticity check -->
+<!-- holo-lore entry 593: data-stream authenticity check -->
+<!-- holo-lore entry 594: data-stream authenticity check -->
+<!-- holo-lore entry 595: data-stream authenticity check -->
+<!-- holo-lore entry 596: data-stream authenticity check -->
+<!-- holo-lore entry 597: data-stream authenticity check -->
+<!-- holo-lore entry 598: data-stream authenticity check -->
+<!-- holo-lore entry 599: data-stream authenticity check -->
+<!-- holo-lore entry 600: data-stream authenticity check -->
+<!-- holo-lore entry 601: data-stream authenticity check -->
+<!-- holo-lore entry 602: data-stream authenticity check -->
+<!-- holo-lore entry 603: data-stream authenticity check -->
+<!-- holo-lore entry 604: data-stream authenticity check -->
+<!-- holo-lore entry 605: data-stream authenticity check -->
+<!-- holo-lore entry 606: data-stream authenticity check -->
+<!-- holo-lore entry 607: data-stream authenticity check -->
+<!-- holo-lore entry 608: data-stream authenticity check -->
+<!-- holo-lore entry 609: data-stream authenticity check -->
+<!-- holo-lore entry 610: data-stream authenticity check -->
+<!-- holo-lore entry 611: data-stream authenticity check -->
+<!-- holo-lore entry 612: data-stream authenticity check -->
+<!-- holo-lore entry 613: data-stream authenticity check -->
+<!-- holo-lore entry 614: data-stream authenticity check -->
+<!-- holo-lore entry 615: data-stream authenticity check -->
+<!-- holo-lore entry 616: data-stream authenticity check -->
+<!-- holo-lore entry 617: data-stream authenticity check -->
+<!-- holo-lore entry 618: data-stream authenticity check -->
+<!-- holo-lore entry 619: data-stream authenticity check -->
+<!-- holo-lore entry 620: data-stream authenticity check -->
+<!-- holo-lore entry 621: data-stream authenticity check -->
+<!-- holo-lore entry 622: data-stream authenticity check -->
+<!-- holo-lore entry 623: data-stream authenticity check -->
+<!-- holo-lore entry 624: data-stream authenticity check -->
+<!-- holo-lore entry 625: data-stream authenticity check -->
+<!-- holo-lore entry 626: data-stream authenticity check -->
+<!-- holo-lore entry 627: data-stream authenticity check -->
+<!-- holo-lore entry 628: data-stream authenticity check -->
+<!-- holo-lore entry 629: data-stream authenticity check -->
+<!-- holo-lore entry 630: data-stream authenticity check -->
+<!-- holo-lore entry 631: data-stream authenticity check -->
+<!-- holo-lore entry 632: data-stream authenticity check -->
+<!-- holo-lore entry 633: data-stream authenticity check -->
+<!-- holo-lore entry 634: data-stream authenticity check -->
+<!-- holo-lore entry 635: data-stream authenticity check -->
+<!-- holo-lore entry 636: data-stream authenticity check -->
+<!-- holo-lore entry 637: data-stream authenticity check -->
+<!-- holo-lore entry 638: data-stream authenticity check -->
+<!-- holo-lore entry 639: data-stream authenticity check -->
+<!-- holo-lore entry 640: data-stream authenticity check -->
+<!-- holo-lore entry 641: data-stream authenticity check -->
+<!-- holo-lore entry 642: data-stream authenticity check -->
+<!-- holo-lore entry 643: data-stream authenticity check -->
+<!-- holo-lore entry 644: data-stream authenticity check -->
+<!-- holo-lore entry 645: data-stream authenticity check -->
+<!-- holo-lore entry 646: data-stream authenticity check -->
+<!-- holo-lore entry 647: data-stream authenticity check -->
+<!-- holo-lore entry 648: data-stream authenticity check -->
+<!-- holo-lore entry 649: data-stream authenticity check -->
+<!-- holo-lore entry 650: data-stream authenticity check -->
+<!-- holo-lore entry 651: data-stream authenticity check -->
+<!-- holo-lore entry 652: data-stream authenticity check -->
+<!-- holo-lore entry 653: data-stream authenticity check -->
+<!-- holo-lore entry 654: data-stream authenticity check -->
+<!-- holo-lore entry 655: data-stream authenticity check -->
+<!-- holo-lore entry 656: data-stream authenticity check -->
+<!-- holo-lore entry 657: data-stream authenticity check -->
+<!-- holo-lore entry 658: data-stream authenticity check -->
+<!-- holo-lore entry 659: data-stream authenticity check -->
+<!-- holo-lore entry 660: data-stream authenticity check -->
+<!-- holo-lore entry 661: data-stream authenticity check -->
+<!-- holo-lore entry 662: data-stream authenticity check -->
+<!-- holo-lore entry 663: data-stream authenticity check -->
+<!-- holo-lore entry 664: data-stream authenticity check -->
+<!-- holo-lore entry 665: data-stream authenticity check -->
+<!-- holo-lore entry 666: data-stream authenticity check -->
+<!-- holo-lore entry 667: data-stream authenticity check -->
+<!-- holo-lore entry 668: data-stream authenticity check -->
+<!-- holo-lore entry 669: data-stream authenticity check -->
+<!-- holo-lore entry 670: data-stream authenticity check -->
+<!-- holo-lore entry 671: data-stream authenticity check -->
+<!-- holo-lore entry 672: data-stream authenticity check -->
+<!-- holo-lore entry 673: data-stream authenticity check -->
+<!-- holo-lore entry 674: data-stream authenticity check -->
+<!-- holo-lore entry 675: data-stream authenticity check -->
+<!-- holo-lore entry 676: data-stream authenticity check -->
+<!-- holo-lore entry 677: data-stream authenticity check -->
+<!-- holo-lore entry 678: data-stream authenticity check -->
+<!-- holo-lore entry 679: data-stream authenticity check -->
+<!-- holo-lore entry 680: data-stream authenticity check -->
+<!-- holo-lore entry 681: data-stream authenticity check -->
+<!-- holo-lore entry 682: data-stream authenticity check -->
+<!-- holo-lore entry 683: data-stream authenticity check -->
+<!-- holo-lore entry 684: data-stream authenticity check -->
+<!-- holo-lore entry 685: data-stream authenticity check -->
+<!-- holo-lore entry 686: data-stream authenticity check -->
+<!-- holo-lore entry 687: data-stream authenticity check -->
+<!-- holo-lore entry 688: data-stream authenticity check -->
+<!-- holo-lore entry 689: data-stream authenticity check -->
+<!-- holo-lore entry 690: data-stream authenticity check -->
+<!-- holo-lore entry 691: data-stream authenticity check -->
+<!-- holo-lore entry 692: data-stream authenticity check -->
+<!-- holo-lore entry 693: data-stream authenticity check -->
+<!-- holo-lore entry 694: data-stream authenticity check -->
+<!-- holo-lore entry 695: data-stream authenticity check -->
+<!-- holo-lore entry 696: data-stream authenticity check -->
+<!-- holo-lore entry 697: data-stream authenticity check -->
+<!-- holo-lore entry 698: data-stream authenticity check -->
+<!-- holo-lore entry 699: data-stream authenticity check -->
+<!-- holo-lore entry 700: data-stream authenticity check -->
+<!-- holo-lore entry 701: data-stream authenticity check -->
+<!-- holo-lore entry 702: data-stream authenticity check -->
+<!-- holo-lore entry 703: data-stream authenticity check -->
+<!-- holo-lore entry 704: data-stream authenticity check -->
+<!-- holo-lore entry 705: data-stream authenticity check -->
+<!-- holo-lore entry 706: data-stream authenticity check -->
+<!-- holo-lore entry 707: data-stream authenticity check -->
+<!-- holo-lore entry 708: data-stream authenticity check -->
+<!-- holo-lore entry 709: data-stream authenticity check -->
+<!-- holo-lore entry 710: data-stream authenticity check -->
+<!-- holo-lore entry 711: data-stream authenticity check -->
+<!-- holo-lore entry 712: data-stream authenticity check -->
+<!-- holo-lore entry 713: data-stream authenticity check -->
+<!-- holo-lore entry 714: data-stream authenticity check -->
+<!-- holo-lore entry 715: data-stream authenticity check -->
+<!-- holo-lore entry 716: data-stream authenticity check -->
+<!-- holo-lore entry 717: data-stream authenticity check -->
+<!-- holo-lore entry 718: data-stream authenticity check -->
+<!-- holo-lore entry 719: data-stream authenticity check -->
+<!-- holo-lore entry 720: data-stream authenticity check -->
+<!-- holo-lore entry 721: data-stream authenticity check -->
+<!-- holo-lore entry 722: data-stream authenticity check -->
+<!-- holo-lore entry 723: data-stream authenticity check -->
+<!-- holo-lore entry 724: data-stream authenticity check -->
+<!-- holo-lore entry 725: data-stream authenticity check -->
+<!-- holo-lore entry 726: data-stream authenticity check -->
+<!-- holo-lore entry 727: data-stream authenticity check -->
+<!-- holo-lore entry 728: data-stream authenticity check -->
+<!-- holo-lore entry 729: data-stream authenticity check -->
+<!-- holo-lore entry 730: data-stream authenticity check -->
+<!-- holo-lore entry 731: data-stream authenticity check -->
+<!-- holo-lore entry 732: data-stream authenticity check -->
+<!-- holo-lore entry 733: data-stream authenticity check -->
+<!-- holo-lore entry 734: data-stream authenticity check -->
+<!-- holo-lore entry 735: data-stream authenticity check -->
+<!-- holo-lore entry 736: data-stream authenticity check -->
+<!-- holo-lore entry 737: data-stream authenticity check -->
+<!-- holo-lore entry 738: data-stream authenticity check -->
+<!-- holo-lore entry 739: data-stream authenticity check -->
+<!-- holo-lore entry 740: data-stream authenticity check -->
+<!-- holo-lore entry 741: data-stream authenticity check -->
+<!-- holo-lore entry 742: data-stream authenticity check -->
+<!-- holo-lore entry 743: data-stream authenticity check -->
+<!-- holo-lore entry 744: data-stream authenticity check -->
+<!-- holo-lore entry 745: data-stream authenticity check -->
+<!-- holo-lore entry 746: data-stream authenticity check -->
+<!-- holo-lore entry 747: data-stream authenticity check -->
+<!-- holo-lore entry 748: data-stream authenticity check -->
+<!-- holo-lore entry 749: data-stream authenticity check -->
+<!-- holo-lore entry 750: data-stream authenticity check -->
+<!-- holo-lore entry 751: data-stream authenticity check -->
+<!-- holo-lore entry 752: data-stream authenticity check -->
+<!-- holo-lore entry 753: data-stream authenticity check -->
+<!-- holo-lore entry 754: data-stream authenticity check -->
+<!-- holo-lore entry 755: data-stream authenticity check -->
+<!-- holo-lore entry 756: data-stream authenticity check -->
+<!-- holo-lore entry 757: data-stream authenticity check -->
+<!-- holo-lore entry 758: data-stream authenticity check -->
+<!-- holo-lore entry 759: data-stream authenticity check -->
+<!-- holo-lore entry 760: data-stream authenticity check -->
+<!-- holo-lore entry 761: data-stream authenticity check -->
+<!-- holo-lore entry 762: data-stream authenticity check -->
+<!-- holo-lore entry 763: data-stream authenticity check -->
+<!-- holo-lore entry 764: data-stream authenticity check -->
+<!-- holo-lore entry 765: data-stream authenticity check -->
+<!-- holo-lore entry 766: data-stream authenticity check -->
+<!-- holo-lore entry 767: data-stream authenticity check -->
+<!-- holo-lore entry 768: data-stream authenticity check -->
+<!-- holo-lore entry 769: data-stream authenticity check -->
+<!-- holo-lore entry 770: data-stream authenticity check -->
+<!-- holo-lore entry 771: data-stream authenticity check -->
+<!-- holo-lore entry 772: data-stream authenticity check -->
+<!-- holo-lore entry 773: data-stream authenticity check -->
+<!-- holo-lore entry 774: data-stream authenticity check -->
+<!-- holo-lore entry 775: data-stream authenticity check -->
+<!-- holo-lore entry 776: data-stream authenticity check -->
+<!-- holo-lore entry 777: data-stream authenticity check -->
+<!-- holo-lore entry 778: data-stream authenticity check -->
+<!-- holo-lore entry 779: data-stream authenticity check -->
+<!-- holo-lore entry 780: data-stream authenticity check -->
+<!-- holo-lore entry 781: data-stream authenticity check -->
+<!-- holo-lore entry 782: data-stream authenticity check -->
+<!-- holo-lore entry 783: data-stream authenticity check -->
+<!-- holo-lore entry 784: data-stream authenticity check -->
+<!-- holo-lore entry 785: data-stream authenticity check -->
+<!-- holo-lore entry 786: data-stream authenticity check -->
+<!-- holo-lore entry 787: data-stream authenticity check -->
+<!-- holo-lore entry 788: data-stream authenticity check -->
+<!-- holo-lore entry 789: data-stream authenticity check -->
+<!-- holo-lore entry 790: data-stream authenticity check -->
+<!-- holo-lore entry 791: data-stream authenticity check -->
+<!-- holo-lore entry 792: data-stream authenticity check -->
+<!-- holo-lore entry 793: data-stream authenticity check -->
+<!-- holo-lore entry 794: data-stream authenticity check -->
+<!-- holo-lore entry 795: data-stream authenticity check -->
+<!-- holo-lore entry 796: data-stream authenticity check -->
+<!-- holo-lore entry 797: data-stream authenticity check -->
+<!-- holo-lore entry 798: data-stream authenticity check -->
+<!-- holo-lore entry 799: data-stream authenticity check -->
+<!-- holo-lore entry 800: data-stream authenticity check -->
+<!-- holo-lore entry 801: data-stream authenticity check -->
+<!-- holo-lore entry 802: data-stream authenticity check -->
+<!-- holo-lore entry 803: data-stream authenticity check -->
+<!-- holo-lore entry 804: data-stream authenticity check -->
+<!-- holo-lore entry 805: data-stream authenticity check -->
+<!-- holo-lore entry 806: data-stream authenticity check -->
+<!-- holo-lore entry 807: data-stream authenticity check -->
+<!-- holo-lore entry 808: data-stream authenticity check -->
+<!-- holo-lore entry 809: data-stream authenticity check -->
+<!-- holo-lore entry 810: data-stream authenticity check -->
+<!-- holo-lore entry 811: data-stream authenticity check -->
+<!-- holo-lore entry 812: data-stream authenticity check -->
+<!-- holo-lore entry 813: data-stream authenticity check -->
+<!-- holo-lore entry 814: data-stream authenticity check -->
+<!-- holo-lore entry 815: data-stream authenticity check -->
+<!-- holo-lore entry 816: data-stream authenticity check -->
+<!-- holo-lore entry 817: data-stream authenticity check -->
+<!-- holo-lore entry 818: data-stream authenticity check -->
+<!-- holo-lore entry 819: data-stream authenticity check -->
+<!-- holo-lore entry 820: data-stream authenticity check -->
+<!-- holo-lore entry 821: data-stream authenticity check -->
+<!-- holo-lore entry 822: data-stream authenticity check -->
+<!-- holo-lore entry 823: data-stream authenticity check -->
+<!-- holo-lore entry 824: data-stream authenticity check -->
+<!-- holo-lore entry 825: data-stream authenticity check -->
+<!-- holo-lore entry 826: data-stream authenticity check -->
+<!-- holo-lore entry 827: data-stream authenticity check -->
+<!-- holo-lore entry 828: data-stream authenticity check -->
+<!-- holo-lore entry 829: data-stream authenticity check -->
+<!-- holo-lore entry 830: data-stream authenticity check -->
+<!-- holo-lore entry 831: data-stream authenticity check -->
+<!-- holo-lore entry 832: data-stream authenticity check -->
+<!-- holo-lore entry 833: data-stream authenticity check -->
+<!-- holo-lore entry 834: data-stream authenticity check -->
+<!-- holo-lore entry 835: data-stream authenticity check -->
+<!-- holo-lore entry 836: data-stream authenticity check -->
+<!-- holo-lore entry 837: data-stream authenticity check -->
+<!-- holo-lore entry 838: data-stream authenticity check -->
+<!-- holo-lore entry 839: data-stream authenticity check -->
+<!-- holo-lore entry 840: data-stream authenticity check -->
+<!-- holo-lore entry 841: data-stream authenticity check -->
+<!-- holo-lore entry 842: data-stream authenticity check -->
+<!-- holo-lore entry 843: data-stream authenticity check -->
+<!-- holo-lore entry 844: data-stream authenticity check -->
+<!-- holo-lore entry 845: data-stream authenticity check -->
+<!-- holo-lore entry 846: data-stream authenticity check -->
+<!-- holo-lore entry 847: data-stream authenticity check -->
+<!-- holo-lore entry 848: data-stream authenticity check -->
+<!-- holo-lore entry 849: data-stream authenticity check -->
+<!-- holo-lore entry 850: data-stream authenticity check -->
+<!-- holo-lore entry 851: data-stream authenticity check -->
+<!-- holo-lore entry 852: data-stream authenticity check -->
+<!-- holo-lore entry 853: data-stream authenticity check -->
+<!-- holo-lore entry 854: data-stream authenticity check -->
+<!-- holo-lore entry 855: data-stream authenticity check -->
+<!-- holo-lore entry 856: data-stream authenticity check -->
+<!-- holo-lore entry 857: data-stream authenticity check -->
+<!-- holo-lore entry 858: data-stream authenticity check -->
+<!-- holo-lore entry 859: data-stream authenticity check -->
+<!-- holo-lore entry 860: data-stream authenticity check -->
+<!-- holo-lore entry 861: data-stream authenticity check -->
+<!-- holo-lore entry 862: data-stream authenticity check -->
+<!-- holo-lore entry 863: data-stream authenticity check -->
+<!-- holo-lore entry 864: data-stream authenticity check -->
+<!-- holo-lore entry 865: data-stream authenticity check -->
+<!-- holo-lore entry 866: data-stream authenticity check -->
+<!-- holo-lore entry 867: data-stream authenticity check -->
+<!-- holo-lore entry 868: data-stream authenticity check -->
+<!-- holo-lore entry 869: data-stream authenticity check -->
+<!-- holo-lore entry 870: data-stream authenticity check -->
+<!-- holo-lore entry 871: data-stream authenticity check -->
+<!-- holo-lore entry 872: data-stream authenticity check -->
+<!-- holo-lore entry 873: data-stream authenticity check -->
+<!-- holo-lore entry 874: data-stream authenticity check -->
+<!-- holo-lore entry 875: data-stream authenticity check -->
+<!-- holo-lore entry 876: data-stream authenticity check -->
+<!-- holo-lore entry 877: data-stream authenticity check -->
+<!-- holo-lore entry 878: data-stream authenticity check -->
+<!-- holo-lore entry 879: data-stream authenticity check -->
+<!-- holo-lore entry 880: data-stream authenticity check -->
+<!-- holo-lore entry 881: data-stream authenticity check -->
+<!-- holo-lore entry 882: data-stream authenticity check -->
+<!-- holo-lore entry 883: data-stream authenticity check -->
+<!-- holo-lore entry 884: data-stream authenticity check -->
+<!-- holo-lore entry 885: data-stream authenticity check -->
+<!-- holo-lore entry 886: data-stream authenticity check -->
+<!-- holo-lore entry 887: data-stream authenticity check -->
+<!-- holo-lore entry 888: data-stream authenticity check -->
+<!-- holo-lore entry 889: data-stream authenticity check -->
+<!-- holo-lore entry 890: data-stream authenticity check -->
+<!-- holo-lore entry 891: data-stream authenticity check -->
+<!-- holo-lore entry 892: data-stream authenticity check -->
+<!-- holo-lore entry 893: data-stream authenticity check -->
+<!-- holo-lore entry 894: data-stream authenticity check -->
+<!-- holo-lore entry 895: data-stream authenticity check -->
+<!-- holo-lore entry 896: data-stream authenticity check -->
+<!-- holo-lore entry 897: data-stream authenticity check -->
+<!-- holo-lore entry 898: data-stream authenticity check -->
+<!-- holo-lore entry 899: data-stream authenticity check -->
