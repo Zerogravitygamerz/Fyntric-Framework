@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galactic Operations Tablet</title>
+  <style>
+    :root {
+      --bg: #0a0f1c;
+      --panel: rgba(18, 26, 48, 0.82);
+      --accent: #32d5ff;
+      --accent-2: #f2b84b;
+      --accent-3: #ff6b9a;
+      --text: #e8f0ff;
+      --muted: #9db3c8;
+      --danger: #ff5c5c;
+      --success: #38e7a5;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+      --glow: 0 0 16px rgba(50, 213, 255, 0.48);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(50, 213, 255, 0.08), transparent 25%),
+        radial-gradient(circle at 80% 0%, rgba(255, 147, 74, 0.12), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(255, 107, 154, 0.08), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      background: rgba(7, 11, 20, 0.9);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      font-weight: 700;
+    }
+
+    .title .glyph {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      color: #04111a;
+      font-weight: 800;
+      text-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--glow);
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      border-radius: 10px;
+      cursor: pointer;
+      letter-spacing: 0.6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    nav button.active,
+    nav button:hover {
+      background: linear-gradient(135deg, rgba(50, 213, 255, 0.22), rgba(255, 107, 154, 0.16));
+      border-color: rgba(50, 213, 255, 0.4);
+      box-shadow: var(--glow);
+    }
+
+    main {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 22px;
+      flex: 1;
+    }
+
+    .sidebar {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 90px;
+      height: fit-content;
+    }
+
+    .avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 24px;
+      border: 2px solid rgba(50, 213, 255, 0.6);
+      box-shadow: var(--glow);
+      background: radial-gradient(circle, rgba(50, 213, 255, 0.6), rgba(10, 15, 28, 0.4));
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .sidebar h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0.8px;
+    }
+
+    .sidebar .role {
+      color: var(--muted);
+      margin: 4px 0 14px;
+      font-size: 14px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(56, 231, 165, 0.12);
+      border: 1px solid rgba(56, 231, 165, 0.4);
+      color: var(--success);
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .metrics {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metric strong {
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(50, 213, 255, 0.14);
+      border: 1px solid rgba(50, 213, 255, 0.28);
+      color: var(--accent);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid.columns-3 {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .grid.columns-2 {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    .card {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      transition: transform 0.15s ease, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(50, 213, 255, 0.4);
+    }
+
+    .card h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      letter-spacing: 0.4px;
+    }
+
+    .card p {
+      margin: 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      margin-right: 6px;
+      color: var(--muted);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    .event {
+      padding-left: 32px;
+      position: relative;
+    }
+
+    .event::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, var(--accent), transparent);
+      border-radius: 50%;
+      box-shadow: var(--glow);
+    }
+
+    .event h5 {
+      margin: 0 0 4px;
+      font-size: 14px;
+    }
+
+    .event span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(50, 213, 255, 0.6);
+      box-shadow: var(--glow);
+    }
+
+    button.primary {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(50, 213, 255, 0.6);
+      background: linear-gradient(135deg, rgba(50, 213, 255, 0.2), rgba(255, 107, 154, 0.18));
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: var(--glow);
+      transition: transform 0.12s ease, filter 0.2s;
+    }
+
+    button.primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .stat small { color: var(--muted); }
+    .stat strong { font-size: 20px; }
+
+    .announcement {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      display: grid;
+      gap: 6px;
+    }
+
+    .announcement .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .feed {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tweet {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tweet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tweet-user { display: flex; gap: 8px; align-items: center; }
+
+    .circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(50, 213, 255, 0.36), rgba(255, 107, 154, 0.26));
+      border: 1px solid rgba(50, 213, 255, 0.4);
+    }
+
+    .tweet-actions {
+      display: flex;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .game-card {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      display: grid;
+      gap: 10px;
+    }
+
+    .game-board {
+      display: grid;
+      gap: 6px;
+    }
+
+    .holo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .holo-cell {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s ease;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .holo-cell.active { background: rgba(50, 213, 255, 0.14); transform: translateY(-1px); }
+    .holo-cell.correct { background: rgba(56, 231, 165, 0.22); }
+    .holo-cell.wrong { background: rgba(255, 92, 92, 0.2); }
+
+    .log {
+      height: 150px;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--text);
+    }
+
+    .table th,
+    .table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .table th { color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .pill.online { background: rgba(56, 231, 165, 0.16); color: var(--success); border-color: rgba(56, 231, 165, 0.4); }
+    .pill.offline { background: rgba(255, 92, 92, 0.12); color: var(--danger); border-color: rgba(255, 92, 92, 0.4); }
+
+    .flex {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .scroll-row {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 260px;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .beacon {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 12px rgba(56, 231, 165, 0.8);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .chip.active { border-color: rgba(50, 213, 255, 0.5); color: var(--text); }
+
+    @media (max-width: 1024px) {
+      main { grid-template-columns: 1fr; }
+      .sidebar { position: relative; top: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <div class="glyph">SW</div>
+      <div>
+        <div>Galactic Operations Tablet</div>
+        <small style="color: var(--muted);">Field-ready datapad for immersive roleplay & command</small>
+      </div>
+    </div>
+    <nav id="navTabs"></nav>
+  </header>
+  <main>
+    <aside class="sidebar">
+      <div class="avatar">CT</div>
+      <h2>Cmdr. Cinder Tyro</h2>
+      <div class="role">Shadow Squadron • 104th Wolfpack</div>
+      <div class="status-chip"><span class="beacon"></span> Biometrics stable</div>
+      <div class="divider"></div>
+      <div class="metrics">
+        <div class="metric"><span>Armor integrity</span><strong id="armorIntegrity">94%</strong></div>
+        <div class="metric"><span>Comms uptime</span><strong>99.3%</strong></div>
+        <div class="metric"><span>Power reserves</span><strong>82%</strong></div>
+        <div class="metric"><span>Encrypted channels</span><strong>7</strong></div>
+      </div>
+    </aside>
+
+    <section class="content" id="content"></section>
+  </main>
+
+  <template id="template-dashboard">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Readiness Pulse</h3>
+        <div class="badge">Live Telemetry</div>
+      </div>
+      <div class="board" id="readinessBoard"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Mission Streams</h3>
+        <div class="controls">
+          <button class="primary" id="syncStreams">Resync Relays</button>
+          <div class="chip-row" id="missionFilters"></div>
+        </div>
+      </div>
+      <div class="grid columns-3" id="missionGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Event Timeline</h3>
+        <span class="badge">Synchronised</span>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </template>
+
+  <template id="template-messages">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Encrypted Channels</h3>
+        <div class="controls">
+          <select id="channelSelect"></select>
+          <button class="primary" id="createThread">New Thread</button>
+        </div>
+      </div>
+      <div class="grid columns-2">
+        <div class="card">
+          <h4>Conversation</h4>
+          <div class="log" id="messageLog"></div>
+          <div class="controls" style="margin-top: 10px;">
+            <input type="text" id="messageInput" placeholder="Transmit encrypted payload" />
+            <button class="primary" id="sendMessage">Send</button>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Channel Insights</h4>
+          <div class="board" id="messageStats"></div>
+          <div class="divider"></div>
+          <div class="timeline" id="commsTimeline"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="template-contacts">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Contacts & Identities</h3>
+        <div class="controls">
+          <input type="text" id="contactSearch" placeholder="Search by callsign or frequency" />
+          <button class="primary" id="addContact">Add Contact</button>
+        </div>
+      </div>
+      <div class="grid columns-3" id="contactGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Security Clearances</h3>
+        <span class="badge">Auto Audited</span>
+      </div>
+      <table class="table" id="clearanceTable"></table>
+    </div>
+  </template>
+
+  <template id="template-reports">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Mission Reports</h3>
+        <div class="controls">
+          <input type="text" id="reportTitle" placeholder="Operation codename" />
+          <input type="text" id="reportSector" placeholder="Sector / System" />
+          <button class="primary" id="fileReport">File Report</button>
+        </div>
+      </div>
+      <div class="grid columns-2">
+        <div class="card">
+          <textarea id="reportBody" rows="10" placeholder="Detail actions, outcomes, squad performance, anomalies, intel" style="resize: vertical;"></textarea>
+          <div class="controls">
+            <select id="reportUrgency">
+              <option value="routine">Routine</option>
+              <option value="priority">Priority</option>
+              <option value="critical">Critical</option>
+            </select>
+            <input type="text" id="reportTags" placeholder="Tags: siege, stealth, evac" />
+          </div>
+        </div>
+        <div class="card">
+          <h4>Recent Reports</h4>
+          <div class="scroll-row" id="reportRow"></div>
+          <div class="divider"></div>
+          <div class="timeline" id="reportTimeline"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="template-regiments">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Regiment Command</h3>
+        <div class="controls">
+          <select id="regimentSelect"></select>
+          <button class="primary" id="deployDrill">Schedule Drill</button>
+          <button class="primary" id="cloneRecall">Rapid Recall</button>
+        </div>
+      </div>
+      <div class="grid columns-3" id="regimentGrid"></div>
+    </div>
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Training Queue</h3>
+        <span class="badge">Live</span>
+      </div>
+      <div class="grid columns-2">
+        <div class="card">
+          <h4>Simulations</h4>
+          <div class="timeline" id="trainingTimeline"></div>
+        </div>
+        <div class="card">
+          <h4>Logistics</h4>
+          <table class="table" id="logisticsTable"></table>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="template-announcements">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Announcements</h3>
+        <div class="controls">
+          <input type="text" id="announcementTitle" placeholder="Headline" />
+          <input type="text" id="announcementChannel" placeholder="Channel" />
+          <button class="primary" id="broadcastAnnouncement">Broadcast</button>
+        </div>
+      </div>
+      <textarea id="announcementBody" rows="6" placeholder="Briefings, alerts, morale boosts, intel drops" style="resize: vertical;"></textarea>
+      <div class="grid columns-2" id="announcementGrid"></div>
+    </div>
+  </template>
+
+  <template id="template-holofeed">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">HoloFeed</h3>
+        <div class="controls">
+          <input type="text" id="holoMessage" placeholder="Share field update" />
+          <button class="primary" id="postHolo">Post</button>
+        </div>
+      </div>
+      <div class="feed" id="holoFeed"></div>
+    </div>
+  </template>
+
+  <template id="template-games">
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Minigames</h3>
+        <span class="badge">Off-duty Sim</span>
+      </div>
+      <div class="games-grid">
+        <div class="game-card">
+          <h4>Dejarik Pattern Memory</h4>
+          <div class="game-board">
+            <div class="holo-grid" id="memoryGrid"></div>
+            <div class="controls">
+              <button class="primary" id="startMemory">Start Sequence</button>
+              <div class="pill" id="memoryStatus">Ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="game-card">
+          <h4>Hyperdrive Calibration</h4>
+          <div class="controls">
+            <input type="range" id="calibrationRange" min="0" max="100" value="50" />
+            <button class="primary" id="tuneDrive">Tune</button>
+            <div class="pill" id="calibrationState">Neutral</div>
+          </div>
+          <div class="log" id="calibrationLog"></div>
+        </div>
+        <div class="game-card">
+          <h4>Starfighter Dice</h4>
+          <div class="controls">
+            <button class="primary" id="rollDice">Roll Attack</button>
+            <div class="pill" id="diceResult">Awaiting</div>
+          </div>
+          <div class="log" id="diceLog"></div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // Lightweight bridge so this tablet can communicate with a Garry's Mod DHTML panel.
+    // Lua side can invoke `panel:AddFunction("gmod", "receive", ...)` to receive `send` calls
+    // and push data into JS with `panel:QueueJavascript("window.__fromGmod('channel', payload)")`.
+    const gmodBridge = (() => {
+      const listeners = new Map();
+
+      function debug(label, payload) {
+        console.debug(`[GMOD] ${label}`, payload);
+      }
+
+      function send(channel, payload = {}) {
+        const serialized = JSON.stringify(payload);
+        try {
+          if (window.gmod && typeof window.gmod.receive === 'function') {
+            window.gmod.receive(channel, serialized);
+            return;
+          }
+          if (window.cef && typeof window.cef.postMessage === 'function') {
+            window.cef.postMessage(channel, payload);
+            return;
+          }
+          debug(`Send -> ${channel}`, payload);
+        } catch (error) {
+          console.error('GMOD bridge send failed', error);
+        }
+      }
+
+      function on(channel, handler) {
+        const queue = listeners.get(channel) || [];
+        queue.push(handler);
+        listeners.set(channel, queue);
+      }
+
+      function dispatch(channel, payload) {
+        (listeners.get(channel) || []).forEach((fn) => {
+          try {
+            fn(payload, channel);
+          } catch (error) {
+            console.error('GMOD listener error', error);
+          }
+        });
+      }
+
+      // Exposed hook for Lua: panel:QueueJavascript("window.__fromGmod('channel', '{"..data.."}')")
+      window.__fromGmod = (channel, rawPayload) => {
+        let parsed = rawPayload;
+        if (typeof rawPayload === 'string') {
+          try {
+            parsed = JSON.parse(rawPayload);
+          } catch (error) {
+            debug('Failed to parse GMOD payload; using raw string', rawPayload);
+          }
+        }
+        dispatch(channel, parsed);
+      };
+
+      return { send, on, dispatch };
+    })();
+
+    const navConfig = [
+      { id: 'dashboard', label: 'Dashboard' },
+      { id: 'messages', label: 'Messages' },
+      { id: 'contacts', label: 'Contacts' },
+      { id: 'reports', label: 'Reports' },
+      { id: 'regiments', label: 'Regiments' },
+      { id: 'announcements', label: 'Announcements' },
+      { id: 'holofeed', label: 'HoloFeed' },
+      { id: 'games', label: 'Minigames' }
+    ];
+
+    const state = {
+      activeTab: 'dashboard',
+      readiness: [
+        { title: 'Atmosuit Pressure', value: '101 kPa', meta: 'Stable', tone: 'good' },
+        { title: 'Vitals Sync', value: '98%', meta: 'Trilaterated', tone: 'good' },
+        { title: 'Helmet HUD', value: 'Online', meta: 'Night vision calibrated', tone: 'good' },
+        { title: 'Armor Plates', value: 'Minor scuffs', meta: 'Layer 3', tone: 'warn' },
+        { title: 'Jetpack Fuel', value: '54%', meta: 'Reserve 32%', tone: 'warn' },
+        { title: 'Med Injector', value: '3 / 4', meta: 'Synth ready', tone: 'good' },
+        { title: 'Comms Encryption', value: 'Rotary 512', meta: 'Key valid 4h', tone: 'good' },
+        { title: 'Scanner Suite', value: 'Locked', meta: 'Thermals', tone: 'good' },
+        { title: 'Weapon Charge', value: '82%', meta: 'Plasma safe', tone: 'good' }
+      ],
+      missions: [
+        { name: 'Nightfall', type: 'Recon', sector: 'Umbara', detail: 'Shadow approach, map anti-air', threat: 'Medium', time: '02:14 Zulu' },
+        { name: 'Hollow Ember', type: 'Sabotage', sector: 'Bracca', detail: 'Disable scrapyard relay nodes', threat: 'High', time: '05:40 Zulu' },
+        { name: 'Silver Mantle', type: 'Escort', sector: 'Coruscant', detail: 'Senate transport covert route', threat: 'Low', time: '09:00 Local' },
+        { name: 'Black Cry', type: 'Evac', sector: 'Alderaan', detail: 'Civilians from debris belt', threat: 'Critical', time: '11:32 Local' },
+        { name: 'Quiet Rain', type: 'Infiltration', sector: 'Nar Shaddaa', detail: 'Slice Hutt data vault', threat: 'High', time: '01:45 Zulu' },
+        { name: 'Glass Falcon', type: 'Patrol', sector: 'Outer Rim', detail: 'Identify pirate staging', threat: 'Medium', time: '03:10 Zulu' }
+      ],
+      events: [
+        { title: 'Helm recalibrated to low-light ops', time: 'Now' },
+        { title: 'Squad packs issued heat seals', time: '-18m' },
+        { title: 'Astromech synced new navcharts', time: '-45m' },
+        { title: 'Ops approved railjack corridor', time: '-2h' },
+        { title: 'Wolfpack recall drill', time: '-3h' }
+      ],
+      channels: [
+        { id: 'shadow', name: 'Shadow Ops', history: ['Lead: We breach in 2.', 'Echo: Charges set.', 'Lead: Mask helmets.'] },
+        { id: 'command', name: 'Command', history: ['CC: Report your resupply.', 'Tyro: Ammo full.', 'CC: Lock in freq-77.'] },
+        { id: 'civilian', name: 'Civ Evac', history: ['Ops: Transport queue 3.', 'Med: Triage alpha ready.', 'Ops: Maintain calm.'] }
+      ],
+      contacts: [
+        { name: 'Ahsoka Tano', freq: '337.22', role: 'Jedi Liaison', status: 'online', tags: ['Jedi', 'Recon'] },
+        { name: 'Commander Wolffe', freq: '201.05', role: '104th Lead', status: 'online', tags: ['Wolfpack', 'Command'] },
+        { name: 'Trapper', freq: '189.44', role: 'Sniper', status: 'offline', tags: ['Marksman'] },
+        { name: 'Sinker', freq: '189.45', role: 'Pilot', status: 'online', tags: ['Pilot'] },
+        { name: 'Plo Koon', freq: '090.00', role: 'General', status: 'online', tags: ['Jedi', 'Command'] },
+        { name: 'Bo-Katan Kryze', freq: '902.12', role: 'Nite Owl', status: 'offline', tags: ['Mandalore'] }
+      ],
+      reports: [
+        { title: 'Siege of Kothlis', sector: 'Bothan', urgency: 'priority', tags: ['siege', 'intel'], body: 'Engaged heavy anti-armor. Requested artillery; clone losses minimal. Retrieved intel caches.', time: '-4h' },
+        { title: 'Shadow on Christophsis', sector: 'Christophsis', urgency: 'critical', tags: ['stealth', 'sapper'], body: 'Droid foundry collapsed after charges. HVT escaped via vent shafts.', time: '-1d' }
+      ],
+      regiments: [
+        { name: '104th Wolfpack', strength: 240, readiness: 0.88, specialty: 'Urban siege', drills: 12 },
+        { name: '212th Attack', strength: 320, readiness: 0.74, specialty: 'Open desert', drills: 18 },
+        { name: '41st Elite', strength: 180, readiness: 0.91, specialty: 'Jungle recon', drills: 15 },
+        { name: '501st Legion', strength: 410, readiness: 0.69, specialty: 'Shock assault', drills: 22 }
+      ],
+      trainings: [
+        { title: 'Underbarrel breaching', time: '00:45', lead: 'Trapper', status: 'Queued' },
+        { title: 'Zero-G boarding', time: '02:10', lead: 'Sinker', status: 'Live' },
+        { title: 'Ion dampener fitting', time: '03:00', lead: 'Techno', status: 'Queued' }
+      ],
+      logistics: [
+        { item: 'Ammo crates', qty: 38, eta: '00:16', status: 'Inbound' },
+        { item: 'Field rations', qty: 120, eta: '01:04', status: 'Stocked' },
+        { item: 'Medpacks', qty: 42, eta: '00:45', status: 'Inbound' }
+      ],
+      announcements: [
+        { title: 'Armor seal check', channel: 'Wolfpack', body: 'All troopers run gasket seals before boarding LAAT. Report leaks to Techno.', time: 'Now' },
+        { title: 'Quiet approach', channel: 'Shadow Ops', body: 'No open comms beyond squad net. Helmet lights off.', time: '-45m' }
+      ],
+      holofeed: [
+        { user: 'ARC-77 Fordo', handle: '@Fordo', text: 'Slicing Separatist beacon. They had no firewall.', time: '2m', reactions: 42 },
+        { user: 'Ahsoka', handle: '@Snips', text: 'Remember: trust the Force, even in the dark.', time: '10m', reactions: 103 },
+        { user: 'Wrecker', handle: '@Wreck', text: 'Lifted a gunship wing for fun. Shouldn\'t have? maybe.', time: '22m', reactions: 88 }
+      ],
+      memorySequence: [],
+      playerSequence: [],
+      calibrationLog: [],
+      diceLog: []
+    };
+
+    // Hooks for Garry's Mod -> UI hydration.
+    gmodBridge.on('contacts:sync', (contacts = []) => {
+      state.contacts = contacts;
+      if (state.activeTab === 'contacts') renderContacts();
+    });
+
+    gmodBridge.on('announcements:push', (announcement) => {
+      if (!announcement) return;
+      state.announcements.unshift({
+        title: announcement.title || 'Incoming order',
+        channel: announcement.channel || 'Command',
+        body: announcement.body || '',
+        time: announcement.time || 'Now'
+      });
+      if (state.activeTab === 'announcements') renderAnnouncementGrid();
+    });
+
+    gmodBridge.on('comms:message', ({ channel, message }) => {
+      if (!channel || !message) return;
+      const target = state.channels.find((c) => c.id === channel) || state.channels[0];
+      target.history.push(message);
+      if (state.activeTab === 'messages') {
+        renderMessageLog();
+        updateMessageStats();
+      }
+    });
+
+    gmodBridge.on('holofeed:inject', (post) => {
+      if (!post) return;
+      state.holofeed.unshift({ user: post.user || 'GMod', handle: post.handle || '@server', text: post.text || '', time: post.time || 'Now', reactions: post.reactions || 0 });
+      if (state.activeTab === 'holofeed') renderHoloFeedList();
+    });
+
+    gmodBridge.on('regiments:update', (payload) => {
+      if (!payload || !Array.isArray(payload.regiments)) return;
+      state.regiments = payload.regiments;
+      if (state.activeTab === 'regiments') renderRegimentGrid();
+    });
+
+    const tabHandlers = {
+      dashboard: renderDashboard,
+      messages: renderMessages,
+      contacts: renderContacts,
+      reports: renderReports,
+      regiments: renderRegiments,
+      announcements: renderAnnouncements,
+      holofeed: renderHoloFeed,
+      games: renderGames
+    };
+
+    function init() {
+      const nav = document.getElementById('navTabs');
+      navConfig.forEach((tab) => {
+        const btn = document.createElement('button');
+        btn.textContent = tab.label;
+        btn.dataset.tab = tab.id;
+        btn.classList.toggle('active', tab.id === state.activeTab);
+        btn.addEventListener('click', () => switchTab(tab.id));
+        nav.appendChild(btn);
+      });
+      switchTab(state.activeTab);
+    }
+
+    function switchTab(id) {
+      state.activeTab = id;
+      document.querySelectorAll('nav button').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === id));
+      const tmpl = document.getElementById(`template-${id}`);
+      const content = document.getElementById('content');
+      content.innerHTML = tmpl.innerHTML;
+      tabHandlers[id]();
+    }
+
+    function createStatCard(stat) {
+      const div = document.createElement('div');
+      div.className = 'stat';
+      const badgeTone = stat.tone === 'warn' ? 'var(--accent-2)' : 'var(--success)';
+      div.innerHTML = `<small>${stat.title}</small><strong>${stat.value}</strong><small style="color:${badgeTone}">${stat.meta}</small>`;
+      return div;
+    }
+
+    function renderDashboard() {
+      const board = document.getElementById('readinessBoard');
+      board.innerHTML = '';
+      state.readiness.forEach((s) => board.appendChild(createStatCard(s)));
+
+      const filterRow = document.getElementById('missionFilters');
+      const uniqueTypes = [...new Set(state.missions.map((m) => m.type))];
+      filterRow.innerHTML = '';
+      const allChip = createChip('All', true, () => renderMissions());
+      filterRow.appendChild(allChip);
+      uniqueTypes.forEach((type) => {
+        const chip = createChip(type, false, () => renderMissions(type));
+        filterRow.appendChild(chip);
+      });
+
+      document.getElementById('syncStreams').addEventListener('click', () => {
+        const newEvent = { title: 'Relays resynced', time: 'Now' };
+        state.events.unshift(newEvent);
+        renderTimeline();
+      });
+
+      renderMissions();
+      renderTimeline();
+    }
+
+    function createChip(label, active, onClick) {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = label;
+      chip.classList.toggle('active', active);
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip-row .chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+        onClick();
+      });
+      return chip;
+    }
+
+    function renderMissions(filterType) {
+      const grid = document.getElementById('missionGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      state.missions
+        .filter((m) => !filterType || m.type === filterType)
+        .forEach((mission) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h4>${mission.name} <span class="tag">${mission.type}</span></h4>
+            <p>${mission.detail}</p>
+            <p class="tag">Sector ${mission.sector}</p>
+            <div class="flex">
+              <span class="pill ${mission.threat === 'Critical' ? 'offline' : 'online'}">${mission.threat}</span>
+              <span class="pill">${mission.time}</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+    }
+
+    function renderTimeline() {
+      const timeline = document.getElementById('timeline');
+      if (!timeline) return;
+      timeline.innerHTML = '';
+      state.events.forEach((event) => {
+        const node = document.createElement('div');
+        node.className = 'event';
+        node.innerHTML = `<h5>${event.title}</h5><span>${event.time}</span>`;
+        timeline.appendChild(node);
+      });
+    }
+
+    function renderMessages() {
+      const channelSelect = document.getElementById('channelSelect');
+      channelSelect.innerHTML = '';
+      state.channels.forEach((ch) => {
+        const opt = document.createElement('option');
+        opt.value = ch.id;
+        opt.textContent = ch.name;
+        channelSelect.appendChild(opt);
+      });
+      channelSelect.value = state.channels[0].id;
+      channelSelect.addEventListener('change', renderMessageLog);
+
+      document.getElementById('createThread').addEventListener('click', () => {
+        const id = `channel-${Date.now()}`;
+        const name = `Thread ${state.channels.length + 1}`;
+        state.channels.push({ id, name, history: ['New thread created'] });
+        gmodBridge.send('comms:new_channel', { id, name });
+        renderMessages();
+      });
+
+      document.getElementById('sendMessage').addEventListener('click', () => {
+        const message = document.getElementById('messageInput').value.trim();
+        if (!message) return;
+        const channel = state.channels.find((c) => c.id === channelSelect.value);
+        channel.history.push(`You: ${message}`);
+        document.getElementById('messageInput').value = '';
+        renderMessageLog();
+        updateMessageStats();
+        logCommsEvent('Outbound packet transmitted');
+        gmodBridge.send('comms:send', { channel: channel.id, message });
+      });
+
+      renderMessageLog();
+      updateMessageStats();
+      renderCommsTimeline();
+    }
+
+    function renderMessageLog() {
+      const log = document.getElementById('messageLog');
+      const channelSelect = document.getElementById('channelSelect');
+      const channel = state.channels.find((c) => c.id === channelSelect.value);
+      log.innerHTML = channel.history.map((line) => `• ${line}`).join('<br>');
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function updateMessageStats() {
+      const stats = document.getElementById('messageStats');
+      if (!stats) return;
+      stats.innerHTML = '';
+      const total = state.channels.reduce((sum, c) => sum + c.history.length, 0);
+      const statData = [
+        { title: 'Channels', value: state.channels.length, meta: 'Active relays', tone: 'good' },
+        { title: 'Total messages', value: total, meta: 'Transcripts', tone: 'warn' },
+        { title: 'Signal integrity', value: '97%', meta: 'Triple handshake', tone: 'good' }
+      ];
+      statData.forEach((s) => stats.appendChild(createStatCard(s)));
+    }
+
+    function renderCommsTimeline() {
+      const timeline = document.getElementById('commsTimeline');
+      if (!timeline) return;
+      timeline.innerHTML = '';
+      const entries = [
+        'Pinged encrypted relay.',
+        'Handshake validated.',
+        'Packet verified.',
+        'Mesh balanced across relays.'
+      ];
+      entries.forEach((entry, idx) => {
+        const node = document.createElement('div');
+        node.className = 'event';
+        node.innerHTML = `<h5>${entry}</h5><span>- ${idx * 3}m</span>`;
+        timeline.appendChild(node);
+      });
+    }
+
+    function logCommsEvent(text) {
+      const timeline = document.getElementById('commsTimeline');
+      if (!timeline) return;
+      const node = document.createElement('div');
+      node.className = 'event';
+      node.innerHTML = `<h5>${text}</h5><span>Now</span>`;
+      timeline.prepend(node);
+    }
+
+    function renderContacts() {
+      const grid = document.getElementById('contactGrid');
+      grid.innerHTML = '';
+      state.contacts.forEach((contact) => grid.appendChild(createContactCard(contact)));
+      document.getElementById('contactSearch').addEventListener('input', handleContactSearch);
+      document.getElementById('addContact').addEventListener('click', addContact);
+      renderClearances();
+    }
+
+    function createContactCard(contact) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const statusClass = contact.status === 'online' ? 'online' : 'offline';
+      card.innerHTML = `
+        <div class="flex" style="justify-content: space-between;">
+          <div>
+            <h4>${contact.name}</h4>
+            <p>${contact.role}</p>
+            <p class="tag">Freq ${contact.freq}</p>
+          </div>
+          <span class="pill ${statusClass}">${contact.status}</span>
+        </div>
+        <div class="chip-row">${contact.tags.map((t) => `<span class="chip">${t}</span>`).join('')}</div>
+        <div class="controls" style="margin-top: 8px;">
+          <button class="primary" data-name="${contact.name}">Ping</button>
+          <button class="primary" data-remove="${contact.name}" style="border-color: rgba(255,92,92,0.6);">Remove</button>
+        </div>
+      `;
+      card.querySelectorAll('[data-remove]').forEach((btn) => btn.addEventListener('click', () => removeContact(btn.dataset.remove)));
+      card.querySelectorAll('[data-name]').forEach((btn) => btn.addEventListener('click', () => pingContact(btn.dataset.name)));
+      return card;
+    }
+
+    function handleContactSearch(e) {
+      const term = e.target.value.toLowerCase();
+      const grid = document.getElementById('contactGrid');
+      grid.innerHTML = '';
+      state.contacts
+        .filter((c) => c.name.toLowerCase().includes(term) || c.freq.includes(term) || c.role.toLowerCase().includes(term))
+        .forEach((contact) => grid.appendChild(createContactCard(contact)));
+    }
+
+    function addContact() {
+      const name = prompt('Contact name / callsign');
+      const freq = prompt('Frequency');
+      const role = prompt('Role / Notes');
+      if (!name || !freq) return;
+      state.contacts.push({ name, freq, role: role || 'Unknown', status: 'online', tags: ['Custom'] });
+      gmodBridge.send('contacts:add', { name, freq, role });
+      renderContacts();
+    }
+
+    function removeContact(name) {
+      state.contacts = state.contacts.filter((c) => c.name !== name);
+      gmodBridge.send('contacts:remove', { name });
+      renderContacts();
+    }
+
+    function pingContact(name) {
+      alert(`Ping sent to ${name}`);
+      gmodBridge.send('contacts:ping', { name });
+    }
+
+    function renderClearances() {
+      const table = document.getElementById('clearanceTable');
+      table.innerHTML = '<tr><th>Name</th><th>Clearance</th><th>Last Audit</th></tr>';
+      state.contacts.forEach((c) => {
+        const level = c.tags.includes('Jedi') ? 'J-Prime' : c.tags.includes('Command') ? 'C2' : 'A3';
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${c.name}</td><td>${level}</td><td>- ${Math.floor(Math.random() * 5)}h</td>`;
+        table.appendChild(row);
+      });
+    }
+
+    function renderReports() {
+      document.getElementById('fileReport').addEventListener('click', fileReport);
+      renderReportCards();
+      renderReportTimeline();
+    }
+
+    function fileReport() {
+      const title = document.getElementById('reportTitle').value.trim();
+      const sector = document.getElementById('reportSector').value.trim();
+      const body = document.getElementById('reportBody').value.trim();
+      const urgency = document.getElementById('reportUrgency').value;
+      const tags = document.getElementById('reportTags').value.split(',').map((t) => t.trim()).filter(Boolean);
+      if (!title || !body) return alert('Missing title or body');
+      state.reports.unshift({ title, sector: sector || 'Unknown', urgency, tags, body, time: 'Now' });
+      gmodBridge.send('reports:file', { title, sector: sector || 'Unknown', urgency, tags, body });
+      document.getElementById('reportTitle').value = '';
+      document.getElementById('reportSector').value = '';
+      document.getElementById('reportBody').value = '';
+      document.getElementById('reportTags').value = '';
+      renderReportCards();
+      renderReportTimeline();
+    }
+
+    function renderReportCards() {
+      const row = document.getElementById('reportRow');
+      if (!row) return;
+      row.innerHTML = '';
+      state.reports.forEach((r) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h4>${r.title}</h4>
+          <p>Sector ${r.sector}</p>
+          <p>${r.body}</p>
+          <div class="chip-row">
+            <span class="chip">${r.urgency}</span>
+            ${r.tags.map((t) => `<span class="chip">${t}</span>`).join('')}
+          </div>
+        `;
+        row.appendChild(card);
+      });
+    }
+
+    function renderReportTimeline() {
+      const timeline = document.getElementById('reportTimeline');
+      if (!timeline) return;
+      timeline.innerHTML = '';
+      state.reports.forEach((r) => {
+        const node = document.createElement('div');
+        node.className = 'event';
+        node.innerHTML = `<h5>${r.title}</h5><span>${r.time}</span>`;
+        timeline.appendChild(node);
+      });
+    }
+
+    function renderRegiments() {
+      const select = document.getElementById('regimentSelect');
+      select.innerHTML = '';
+      state.regiments.forEach((r) => {
+        const opt = document.createElement('option');
+        opt.value = r.name;
+        opt.textContent = r.name;
+        select.appendChild(opt);
+      });
+
+      document.getElementById('deployDrill').addEventListener('click', () => {
+        const regiment = select.value;
+        state.trainings.unshift({ title: `Drill for ${regiment}`, time: '00:30', lead: 'Auto', status: 'Queued' });
+        gmodBridge.send('regiments:drill', { regiment });
+        renderTrainingTimeline();
+      });
+
+      document.getElementById('cloneRecall').addEventListener('click', () => {
+        alert('Broadcasting rapid recall on all clones of selected regiment');
+        gmodBridge.send('regiments:recall', { regiment: select.value });
+      });
+
+      renderRegimentGrid();
+      renderTrainingTimeline();
+      renderLogisticsTable();
+    }
+
+    function renderRegimentGrid() {
+      const grid = document.getElementById('regimentGrid');
+      grid.innerHTML = '';
+      state.regiments.forEach((r) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h4>${r.name}</h4>
+          <p>${r.specialty}</p>
+          <div class="board">
+            <div class="stat"><small>Strength</small><strong>${r.strength}</strong><small>Troopers</small></div>
+            <div class="stat"><small>Readiness</small><strong>${Math.round(r.readiness * 100)}%</strong><small>Sim/field</small></div>
+            <div class="stat"><small>Drills</small><strong>${r.drills}</strong><small>Completed</small></div>
+          </div>
+          <div class="controls">
+            <button class="primary" data-buff="${r.name}">Issue Buff</button>
+            <button class="primary" data-log="${r.name}">View Logs</button>
+          </div>
+        `;
+        card.querySelector('[data-buff]').addEventListener('click', () => applyBuff(r.name));
+        card.querySelector('[data-log]').addEventListener('click', () => alert(`${r.name} logs loaded.`));
+        grid.appendChild(card);
+      });
+    }
+
+    function applyBuff(name) {
+      const regiment = state.regiments.find((r) => r.name === name);
+      regiment.readiness = Math.min(1, regiment.readiness + 0.05);
+      gmodBridge.send('regiments:buff', { regiment: name, readiness: regiment.readiness });
+      renderRegimentGrid();
+    }
+
+    function renderTrainingTimeline() {
+      const timeline = document.getElementById('trainingTimeline');
+      if (!timeline) return;
+      timeline.innerHTML = '';
+      state.trainings.forEach((t) => {
+        const node = document.createElement('div');
+        node.className = 'event';
+        node.innerHTML = `<h5>${t.title}</h5><span>${t.time} • ${t.lead} • ${t.status}</span>`;
+        timeline.appendChild(node);
+      });
+    }
+
+    function renderLogisticsTable() {
+      const table = document.getElementById('logisticsTable');
+      table.innerHTML = '<tr><th>Item</th><th>Qty</th><th>ETA</th><th>Status</th></tr>';
+      state.logistics.forEach((l) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${l.item}</td><td>${l.qty}</td><td>${l.eta}</td><td>${l.status}</td>`;
+        table.appendChild(row);
+      });
+    }
+
+    function renderAnnouncements() {
+      document.getElementById('broadcastAnnouncement').addEventListener('click', () => {
+        const title = document.getElementById('announcementTitle').value.trim();
+        const channel = document.getElementById('announcementChannel').value.trim() || 'General';
+        const body = document.getElementById('announcementBody').value.trim();
+        if (!title || !body) return alert('Missing fields');
+        state.announcements.unshift({ title, channel, body, time: 'Now' });
+        gmodBridge.send('announcements:broadcast', { title, channel, body });
+        document.getElementById('announcementTitle').value = '';
+        document.getElementById('announcementChannel').value = '';
+        document.getElementById('announcementBody').value = '';
+        renderAnnouncementGrid();
+      });
+      renderAnnouncementGrid();
+    }
+
+    function renderAnnouncementGrid() {
+      const grid = document.getElementById('announcementGrid');
+      grid.innerHTML = '';
+      state.announcements.forEach((a) => {
+        const card = document.createElement('div');
+        card.className = 'announcement';
+        card.innerHTML = `
+          <div class="flex" style="justify-content: space-between;">
+            <div>
+              <strong>${a.title}</strong>
+              <div class="meta">${a.channel}</div>
+            </div>
+            <span class="pill">${a.time}</span>
+          </div>
+          <p>${a.body}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderHoloFeed() {
+      document.getElementById('postHolo').addEventListener('click', () => {
+        const text = document.getElementById('holoMessage').value.trim();
+        if (!text) return;
+        state.holofeed.unshift({ user: 'Cmdr. Tyro', handle: '@Tyro', text, time: 'Now', reactions: 0 });
+        gmodBridge.send('holofeed:post', { text });
+        document.getElementById('holoMessage').value = '';
+        renderHoloFeedList();
+      });
+      renderHoloFeedList();
+    }
+
+    function renderHoloFeedList() {
+      const feed = document.getElementById('holoFeed');
+      feed.innerHTML = '';
+      state.holofeed.forEach((post) => {
+        const card = document.createElement('div');
+        card.className = 'tweet';
+        card.innerHTML = `
+          <div class="tweet-header">
+            <div class="tweet-user">
+              <div class="circle"></div>
+              <div>
+                <strong>${post.user}</strong>
+                <div style="color: var(--muted); font-size: 12px;">${post.handle}</div>
+              </div>
+            </div>
+            <span class="pill">${post.time}</span>
+          </div>
+          <div>${post.text}</div>
+          <div class="tweet-actions">
+            <span>❤ ${post.reactions}</span>
+            <span class="chip" data-react="like">Bravo</span>
+            <span class="chip" data-react="boost">Boost</span>
+          </div>
+        `;
+        card.querySelectorAll('[data-react]').forEach((btn) => btn.addEventListener('click', () => {
+          post.reactions += btn.dataset.react === 'boost' ? 3 : 1;
+          renderHoloFeedList();
+        }));
+        feed.appendChild(card);
+      });
+    }
+
+    function renderGames() {
+      renderMemoryGrid();
+      document.getElementById('startMemory').addEventListener('click', startMemorySequence);
+      document.getElementById('memoryGrid').addEventListener('click', handleMemoryClick);
+      document.getElementById('tuneDrive').addEventListener('click', tuneHyperdrive);
+      document.getElementById('rollDice').addEventListener('click', rollStarfighterDice);
+      renderCalibrationLog();
+      renderDiceLog();
+    }
+
+    function renderMemoryGrid() {
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+      for (let i = 0; i < 16; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'holo-cell';
+        cell.dataset.index = i;
+        cell.textContent = i + 1;
+        grid.appendChild(cell);
+      }
+    }
+
+    function startMemorySequence() {
+      state.memorySequence = Array.from({ length: 4 + Math.floor(Math.random() * 4) }, () => Math.floor(Math.random() * 16));
+      state.playerSequence = [];
+      document.getElementById('memoryStatus').textContent = 'Playback...';
+      playbackSequence(0);
+    }
+
+    function playbackSequence(idx) {
+      const grid = document.getElementById('memoryGrid');
+      if (idx >= state.memorySequence.length) {
+        document.getElementById('memoryStatus').textContent = 'Your turn';
+        return;
+      }
+      const cell = grid.children[state.memorySequence[idx]];
+      cell.classList.add('active');
+      setTimeout(() => {
+        cell.classList.remove('active');
+        setTimeout(() => playbackSequence(idx + 1), 200);
+      }, 400);
+    }
+
+    function handleMemoryClick(e) {
+      const target = e.target.closest('.holo-cell');
+      if (!target) return;
+      const idx = Number(target.dataset.index);
+      const expected = state.memorySequence[state.playerSequence.length];
+      if (idx === expected) {
+        target.classList.add('correct');
+        state.playerSequence.push(idx);
+        if (state.playerSequence.length === state.memorySequence.length) {
+          document.getElementById('memoryStatus').textContent = 'Sequence mastered';
+          gmodBridge.send('games:memory', { result: 'success', length: state.memorySequence.length });
+        }
+      } else {
+        target.classList.add('wrong');
+        document.getElementById('memoryStatus').textContent = 'Sequence failed';
+        state.playerSequence = [];
+        gmodBridge.send('games:memory', { result: 'fail', expected, got: idx });
+      }
+      setTimeout(() => target.classList.remove('correct', 'wrong'), 300);
+    }
+
+    function tuneHyperdrive() {
+      const value = Number(document.getElementById('calibrationRange').value);
+      const delta = Math.abs(68 - value);
+      const outcome = delta < 5 ? 'Perfect phase-lock' : delta < 15 ? 'Acceptable drift' : 'Catastrophic misalign';
+      state.calibrationLog.unshift(`Calibrated to ${value}. Result: ${outcome}.`);
+      if (state.calibrationLog.length > 10) state.calibrationLog.pop();
+      document.getElementById('calibrationState').textContent = outcome;
+      renderCalibrationLog();
+      gmodBridge.send('games:calibration', { value, outcome });
+    }
+
+    function renderCalibrationLog() {
+      const log = document.getElementById('calibrationLog');
+      if (!log) return;
+      log.innerHTML = state.calibrationLog.map((l) => `> ${l}`).join('<br>');
+    }
+
+    function rollStarfighterDice() {
+      const roll = Math.ceil(Math.random() * 20);
+      const narr = roll > 16 ? 'Hit critical subsystem' : roll > 9 ? 'Solid hit on hull' : 'Shot deflected by shields';
+      state.diceLog.unshift(`Rolled ${roll}: ${narr}`);
+      if (state.diceLog.length > 12) state.diceLog.pop();
+      document.getElementById('diceResult').textContent = `${roll}`;
+      renderDiceLog();
+      gmodBridge.send('games:dice', { roll, narrative: narr });
+    }
+
+    function renderDiceLog() {
+      const log = document.getElementById('diceLog');
+      if (!log) return;
+      log.innerHTML = state.diceLog.map((l) => `# ${l}`).join('<br>');
+    }
+
+    init();
+  </script>
+</body>
+</html>
