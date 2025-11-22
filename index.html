@@ -804,6 +804,65 @@
   </template>
 
   <script>
+    // Lightweight bridge so this tablet can communicate with a Garry's Mod DHTML panel.
+    // Lua side can invoke `panel:AddFunction("gmod", "receive", ...)` to receive `send` calls
+    // and push data into JS with `panel:QueueJavascript("window.__fromGmod('channel', payload)")`.
+    const gmodBridge = (() => {
+      const listeners = new Map();
+
+      function debug(label, payload) {
+        console.debug(`[GMOD] ${label}`, payload);
+      }
+
+      function send(channel, payload = {}) {
+        const serialized = JSON.stringify(payload);
+        try {
+          if (window.gmod && typeof window.gmod.receive === 'function') {
+            window.gmod.receive(channel, serialized);
+            return;
+          }
+          if (window.cef && typeof window.cef.postMessage === 'function') {
+            window.cef.postMessage(channel, payload);
+            return;
+          }
+          debug(`Send -> ${channel}`, payload);
+        } catch (error) {
+          console.error('GMOD bridge send failed', error);
+        }
+      }
+
+      function on(channel, handler) {
+        const queue = listeners.get(channel) || [];
+        queue.push(handler);
+        listeners.set(channel, queue);
+      }
+
+      function dispatch(channel, payload) {
+        (listeners.get(channel) || []).forEach((fn) => {
+          try {
+            fn(payload, channel);
+          } catch (error) {
+            console.error('GMOD listener error', error);
+          }
+        });
+      }
+
+      // Exposed hook for Lua: panel:QueueJavascript("window.__fromGmod('channel', '{"..data.."}')")
+      window.__fromGmod = (channel, rawPayload) => {
+        let parsed = rawPayload;
+        if (typeof rawPayload === 'string') {
+          try {
+            parsed = JSON.parse(rawPayload);
+          } catch (error) {
+            debug('Failed to parse GMOD payload; using raw string', rawPayload);
+          }
+        }
+        dispatch(channel, parsed);
+      };
+
+      return { send, on, dispatch };
+    })();
+
     const navConfig = [
       { id: 'dashboard', label: 'Dashboard' },
       { id: 'messages', label: 'Messages' },
@@ -890,6 +949,45 @@
       calibrationLog: [],
       diceLog: []
     };
+
+    // Hooks for Garry's Mod -> UI hydration.
+    gmodBridge.on('contacts:sync', (contacts = []) => {
+      state.contacts = contacts;
+      if (state.activeTab === 'contacts') renderContacts();
+    });
+
+    gmodBridge.on('announcements:push', (announcement) => {
+      if (!announcement) return;
+      state.announcements.unshift({
+        title: announcement.title || 'Incoming order',
+        channel: announcement.channel || 'Command',
+        body: announcement.body || '',
+        time: announcement.time || 'Now'
+      });
+      if (state.activeTab === 'announcements') renderAnnouncementGrid();
+    });
+
+    gmodBridge.on('comms:message', ({ channel, message }) => {
+      if (!channel || !message) return;
+      const target = state.channels.find((c) => c.id === channel) || state.channels[0];
+      target.history.push(message);
+      if (state.activeTab === 'messages') {
+        renderMessageLog();
+        updateMessageStats();
+      }
+    });
+
+    gmodBridge.on('holofeed:inject', (post) => {
+      if (!post) return;
+      state.holofeed.unshift({ user: post.user || 'GMod', handle: post.handle || '@server', text: post.text || '', time: post.time || 'Now', reactions: post.reactions || 0 });
+      if (state.activeTab === 'holofeed') renderHoloFeedList();
+    });
+
+    gmodBridge.on('regiments:update', (payload) => {
+      if (!payload || !Array.isArray(payload.regiments)) return;
+      state.regiments = payload.regiments;
+      if (state.activeTab === 'regiments') renderRegimentGrid();
+    });
 
     const tabHandlers = {
       dashboard: renderDashboard,
@@ -1020,6 +1118,7 @@
         const id = `channel-${Date.now()}`;
         const name = `Thread ${state.channels.length + 1}`;
         state.channels.push({ id, name, history: ['New thread created'] });
+        gmodBridge.send('comms:new_channel', { id, name });
         renderMessages();
       });
 
@@ -1032,6 +1131,7 @@
         renderMessageLog();
         updateMessageStats();
         logCommsEvent('Outbound packet transmitted');
+        gmodBridge.send('comms:send', { channel: channel.id, message });
       });
 
       renderMessageLog();
@@ -1135,16 +1235,19 @@
       const role = prompt('Role / Notes');
       if (!name || !freq) return;
       state.contacts.push({ name, freq, role: role || 'Unknown', status: 'online', tags: ['Custom'] });
+      gmodBridge.send('contacts:add', { name, freq, role });
       renderContacts();
     }
 
     function removeContact(name) {
       state.contacts = state.contacts.filter((c) => c.name !== name);
+      gmodBridge.send('contacts:remove', { name });
       renderContacts();
     }
 
     function pingContact(name) {
       alert(`Ping sent to ${name}`);
+      gmodBridge.send('contacts:ping', { name });
     }
 
     function renderClearances() {
@@ -1172,6 +1275,7 @@
       const tags = document.getElementById('reportTags').value.split(',').map((t) => t.trim()).filter(Boolean);
       if (!title || !body) return alert('Missing title or body');
       state.reports.unshift({ title, sector: sector || 'Unknown', urgency, tags, body, time: 'Now' });
+      gmodBridge.send('reports:file', { title, sector: sector || 'Unknown', urgency, tags, body });
       document.getElementById('reportTitle').value = '';
       document.getElementById('reportSector').value = '';
       document.getElementById('reportBody').value = '';
@@ -1225,11 +1329,13 @@
       document.getElementById('deployDrill').addEventListener('click', () => {
         const regiment = select.value;
         state.trainings.unshift({ title: `Drill for ${regiment}`, time: '00:30', lead: 'Auto', status: 'Queued' });
+        gmodBridge.send('regiments:drill', { regiment });
         renderTrainingTimeline();
       });
 
       document.getElementById('cloneRecall').addEventListener('click', () => {
         alert('Broadcasting rapid recall on all clones of selected regiment');
+        gmodBridge.send('regiments:recall', { regiment: select.value });
       });
 
       renderRegimentGrid();
@@ -1265,6 +1371,7 @@
     function applyBuff(name) {
       const regiment = state.regiments.find((r) => r.name === name);
       regiment.readiness = Math.min(1, regiment.readiness + 0.05);
+      gmodBridge.send('regiments:buff', { regiment: name, readiness: regiment.readiness });
       renderRegimentGrid();
     }
 
@@ -1297,6 +1404,7 @@
         const body = document.getElementById('announcementBody').value.trim();
         if (!title || !body) return alert('Missing fields');
         state.announcements.unshift({ title, channel, body, time: 'Now' });
+        gmodBridge.send('announcements:broadcast', { title, channel, body });
         document.getElementById('announcementTitle').value = '';
         document.getElementById('announcementChannel').value = '';
         document.getElementById('announcementBody').value = '';
@@ -1330,6 +1438,7 @@
         const text = document.getElementById('holoMessage').value.trim();
         if (!text) return;
         state.holofeed.unshift({ user: 'Cmdr. Tyro', handle: '@Tyro', text, time: 'Now', reactions: 0 });
+        gmodBridge.send('holofeed:post', { text });
         document.getElementById('holoMessage').value = '';
         renderHoloFeedList();
       });
@@ -1421,11 +1530,13 @@
         state.playerSequence.push(idx);
         if (state.playerSequence.length === state.memorySequence.length) {
           document.getElementById('memoryStatus').textContent = 'Sequence mastered';
+          gmodBridge.send('games:memory', { result: 'success', length: state.memorySequence.length });
         }
       } else {
         target.classList.add('wrong');
         document.getElementById('memoryStatus').textContent = 'Sequence failed';
         state.playerSequence = [];
+        gmodBridge.send('games:memory', { result: 'fail', expected, got: idx });
       }
       setTimeout(() => target.classList.remove('correct', 'wrong'), 300);
     }
@@ -1438,6 +1549,7 @@
       if (state.calibrationLog.length > 10) state.calibrationLog.pop();
       document.getElementById('calibrationState').textContent = outcome;
       renderCalibrationLog();
+      gmodBridge.send('games:calibration', { value, outcome });
     }
 
     function renderCalibrationLog() {
@@ -1453,6 +1565,7 @@
       if (state.diceLog.length > 12) state.diceLog.pop();
       document.getElementById('diceResult').textContent = `${roll}`;
       renderDiceLog();
+      gmodBridge.send('games:dice', { roll, narrative: narr });
     }
 
     function renderDiceLog() {
