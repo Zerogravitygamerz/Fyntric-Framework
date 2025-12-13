@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Holotable Nexus | Star Wars AI Console</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="system-shell">
+    <header class="command-bar">
+      <div class="brand">
+        <span class="brand-icon">✦</span>
+        <span class="brand-text">Holotable Nexus</span>
+      </div>
+      <div class="status-group">
+        <div class="status-indicator" id="hyperdrive-status">Hyperdrive: Ready</div>
+        <div class="status-indicator" id="ai-state">Oracle AI: Online</div>
+        <div class="clock" id="live-clock"></div>
+      </div>
+    </header>
+
+    <main class="desktop">
+      <aside class="nav-pane">
+        <div class="profile">
+          <div class="avatar">AI</div>
+          <div class="identity">
+            <div class="name">Oracle-7</div>
+            <div class="role">Strategic Holo-Consultant</div>
+          </div>
+        </div>
+        <div class="nav-group">
+          <button class="nav-item active" data-target="dashboard">Dashboard</button>
+          <button class="nav-item" data-target="console">Console</button>
+          <button class="nav-item" data-target="timeline">Timeline</button>
+          <button class="nav-item" data-target="intel">Intel Grid</button>
+          <button class="nav-item" data-target="settings">Settings</button>
+        </div>
+        <div class="task-buttons">
+          <button class="pill" id="start-briefing">Start Briefing</button>
+          <button class="pill" id="toggle-theme">Toggle Binary Sunset</button>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="window" id="dashboard" data-window>
+          <header class="window-bar">
+            <span class="title">Mission Overview</span>
+            <div class="window-controls">
+              <button aria-label="pin" class="control pin"></button>
+              <button aria-label="minimize" class="control minimize"></button>
+              <button aria-label="close" class="control close"></button>
+            </div>
+          </header>
+          <div class="window-body">
+            <div class="hero">
+              <div>
+                <p class="eyebrow">Galactic Scenario</p>
+                <h1>Outer Rim Recon</h1>
+                <p class="lede">An interactive, roleplay-ready tablet inspired by Star Wars command centers with Windows 11-inspired glassmorphism.</p>
+                <div class="action-row">
+                  <button class="primary" id="deploy-probe">Deploy Probe</button>
+                  <button class="secondary" id="open-sim">Open Simulation</button>
+                </div>
+              </div>
+              <div class="holo-map" id="holo-map"></div>
+            </div>
+
+            <div class="grid">
+              <div class="card holo" id="intel-card">
+                <div class="card-header">
+                  <span>Intel Broadcast</span>
+                  <button class="ghost" id="refresh-intel">Refresh</button>
+                </div>
+                <div class="card-body" id="intel-feed"></div>
+              </div>
+              <div class="card glass" id="ai-console">
+                <div class="card-header">
+                  <span>AI Console</span>
+                  <div class="chip" id="ai-mode">Mode: Lore</div>
+                </div>
+                <div class="card-body console-output" id="console-log"></div>
+                <div class="console-input">
+                  <input id="command-input" type="text" placeholder="Ask the Oracle..." />
+                  <button id="send-command">Send</button>
+                </div>
+              </div>
+              <div class="card glass" id="task-list">
+                <div class="card-header">
+                  <span>Mission Tasks</span>
+                  <button class="ghost" id="add-task">Add</button>
+                </div>
+                <ul class="card-body list" id="tasks"></ul>
+              </div>
+              <div class="card holo" id="system-logs">
+                <div class="card-header">
+                  <span>System Logs</span>
+                  <button class="ghost" id="clear-logs">Clear</button>
+                </div>
+                <div class="card-body log-body" id="log-view"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="window hidden" id="console" data-window>
+          <header class="window-bar">
+            <span class="title">Diagnostics Console</span>
+            <div class="window-controls">
+              <button aria-label="pin" class="control pin"></button>
+              <button aria-label="minimize" class="control minimize"></button>
+              <button aria-label="close" class="control close"></button>
+            </div>
+          </header>
+          <div class="window-body column">
+            <div class="terminal" id="diagnostic-terminal"></div>
+            <div class="terminal-input">
+              <input type="text" id="diag-input" placeholder="Run command: scan core" />
+              <button id="run-diag">Execute</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="window hidden" id="timeline" data-window>
+          <header class="window-bar">
+            <span class="title">Mission Timeline</span>
+            <div class="window-controls">
+              <button aria-label="pin" class="control pin"></button>
+              <button aria-label="minimize" class="control minimize"></button>
+              <button aria-label="close" class="control close"></button>
+            </div>
+          </header>
+          <div class="window-body">
+            <ol class="timeline" id="timeline-list"></ol>
+          </div>
+        </div>
+
+        <div class="window hidden" id="intel" data-window>
+          <header class="window-bar">
+            <span class="title">Intel Grid</span>
+            <div class="window-controls">
+              <button aria-label="pin" class="control pin"></button>
+              <button aria-label="minimize" class="control minimize"></button>
+              <button aria-label="close" class="control close"></button>
+            </div>
+          </header>
+          <div class="window-body grid" id="intel-grid"></div>
+        </div>
+
+        <div class="window hidden" id="settings" data-window>
+          <header class="window-bar">
+            <span class="title">Control Settings</span>
+            <div class="window-controls">
+              <button aria-label="pin" class="control pin"></button>
+              <button aria-label="minimize" class="control minimize"></button>
+              <button aria-label="close" class="control close"></button>
+            </div>
+          </header>
+          <div class="window-body column">
+            <div class="settings-group">
+              <label class="toggle">
+                <input type="checkbox" id="ambient-sfx" checked />
+                <span>Ambient SFX</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="gridlines" checked />
+                <span>Gridlines</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="parallax" checked />
+                <span>Parallax Holo Map</span>
+              </label>
+            </div>
+            <div class="settings-group">
+              <label>AI Persona</label>
+              <select id="ai-persona">
+                <option value="lore">Lore Keeper</option>
+                <option value="tactician">Tactician</option>
+                <option value="diplomat">Diplomat</option>
+                <option value="smuggler">Smuggler</option>
+              </select>
+            </div>
+            <div class="settings-group">
+              <label>Theme Density</label>
+              <input type="range" id="density" min="0.4" max="1" step="0.05" value="0.9" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="glow-grid"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
